@@ -42,15 +42,16 @@ function Create-Graph {
     $config = Load-Configuration
     $graph = ""
 
-    # Analyze day records and create ASCII representation
-    # - Apply logic to represent each day with the appropriate character
-    # - Implement prediction logic based on historical data
-    # - Ensure the graph centers around the current day
+    # Implement logic to map day records to ASCII characters
+    # Develop prediction logic based on a moving average or similar method
+    # Ensure the graph is centered around the current day
 
     # Placeholder for detailed graph creation logic
 
     return $graph
 }
+
+
 
 
 
