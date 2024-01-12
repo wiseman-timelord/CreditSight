@@ -7,10 +7,19 @@ By using day records like for example
 	10DayRecords = @(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	100DayRecords = @(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	1000DayRecodss = @(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-We are able to have large scale, history and prediction, the later records will be of a lesser quality, but, it would result in a high compitence to, remember and predict, based upon a quality history input.
+so we will also need 2 new keys in the "Ps1" and a rename, for "DayCreditLow" and "DaYCreditHigh" and "DayCreditNow".  
 
-Part 2:
-Line graphs, there will be history and prediction, at first every character on the line will represent a day, then the history will all shift over one each time there a new day, when it gets to end they all will shift over by one, so that todays day is always a new character, however, each day the history shifts there will be a new character on historygraph, while other history will shift over, and it should scale to the remainter of the space in the box. 
+Upon booting and events of next day, the graph will be kept current, so it needs to check every hour what the, time and date, are against the and requred todays date,, Loading the and Event Next Day on system Date/Time, the keys on the ,  will be checked against the syand  the "DayCreditNow" will be enalso be linked from 
+
+Display:
+The graph will be constructed as an array of strings, where each string is a line in the graph.
+Data Representation: Each character on the line graph represents a day's financial change. The graph will be constructed as an array of strings, where each string is a line in the graph.
+Band Thickness: The thickness of the band in the prediction graph will represent the uncertainty or volatility in the prediction. A wider band indicates greater uncertainty.
+actual variance within the day. 
+
+3 / 3
+
+
 ```
 Histoy:
 |----------------------------------------------------------------|
