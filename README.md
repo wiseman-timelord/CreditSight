@@ -1,5 +1,7 @@
 # CreditSight-Ps
-Finanace planner details still to be finalized, prediction and history, ascii line graphs and numbers.
+
+### STATUS: ALPHA
+- Finanace planner details still to be finalized, prediction and history, ascii line graphs and numbers.
 
 ### Features
 - ** Daily Rotation ** Upon booting and events of next day, the graph will be kept current, the keys will be checked against the system date/time hourly.
