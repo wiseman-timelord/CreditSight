@@ -7,6 +7,7 @@ Work to do...
 
 ### DESCRIPTION
 - Finanace planner details still to be finalized, prediction and history, ascii line graphs and numbers. £ for credit, * for top 50% credit, x for debt, X for top 50% debt.
+- DayRecords_10 should rotate every 10 days, and DayRecords_100 every 100 days. PowerShell's array slicing can be utilized to shift elements in the array efficiently.
 
 ### FEATURES
 - ** Credit Visualization ** On the History line graph each character represents a day's financial change, the graph will be constructed as an array of strings, where each string is a line in the graph. The thickness of the band in the prediction graph will represent the uncertainty or volatility in the prediction. A wider band indicates greater uncertainty.
