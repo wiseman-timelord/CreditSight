@@ -3,7 +3,8 @@
 ### STATUS: ALPHA
 Work to do...
 - Progress scripts to completion over initial plans, think into these plans along the way
-- Implement upcoming charges, to enter up to 3 known upcoming charges to your finances, or maybe it would be based upon weeks instead of days, or, lists of following, 7 day and 4 week and 3 month, periods etc, and it would not affect the prediction too bad, and still be accurate enough? there are ideas for re-occuring charges too. 
+- Implement upcoming charges, to enter up to 3 known upcoming charges to your finances, in addition to a reoccurring monthly amount, this will all affect the prediction graph.
+- have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
 ### DESCRIPTION
 - Finanace planner details still to be finalized, prediction and history, ascii line graphs and numbers. 
