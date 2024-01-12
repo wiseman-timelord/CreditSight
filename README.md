@@ -9,3 +9,4 @@ Finanace planner details still to be finalized, prediction and history, ascii li
 ### NOTES
 * The average number of days in a year, accounting for leap years, is 365.25.
 * The average number of days in a month, accounting for leap years, is approximately 30.4375.
+* It would make sense to have a 1/8 longer day twice a year during 2 main solstice days, as socially acceptable day to waste time on things.
