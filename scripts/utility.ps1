@@ -8,21 +8,28 @@ function Save-Configuration ($config) {
 
 function Update-FinancialData ($amountChange) {
     $config = Load-Configuration
-    # ... Update logic for CurrentTotal, LastFinanceChange, etc.
+    $config.CurrentTotal += $amountChange
+    $config.LastFinanceChange = $amountChange
+
+    # Determine the magnitude of change and update the appropriate DayRecords
+    if ($amountChange -ge 1000) {
+        Rotate-DailyRecords $config.DayRecords_1000 ($amountChange / 1000)
+    } elseif ($amountChange -ge 100) {
+        Rotate-DailyRecords $config.DayRecords_100 ($amountChange / 100)
+    } elseif ($amountChange -ge 10) {
+        Rotate-DailyRecords $config.DayRecords_10 ($amountChange / 10)
+    } else {
+        Rotate-DailyRecords $config.DayRecords_1 $amountChange
+    }
+
     Save-Configuration $config
 }
 
 function Rotate-DailyRecords ([ref]$dayRecords, $newRecord) {
-    # ... Logic to rotate daily records
+    $dayRecords.Value = $dayRecords.Value[1..($dayRecords.Value.Length - 2)] + @($newRecord)
 }
 
-function Create-Graph {
-    $config = Load-Configuration
-    # ... Logic to create the ASCII art graph
-    # Placeholder for detailed graph creation logic
-}
+# Example usage of Update-FinancialData
+# Update-FinancialData 120 # Update the financial data with a change of 120
 
-# Placeholder for additional utility functions
-
-# Example usage of Create-Graph
-Write-Host (Create-Graph)
+# Placeholder for Create-Graph function and other utility functions
