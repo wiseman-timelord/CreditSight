@@ -1,6 +1,11 @@
 # CreditSight-Ps
 
 ### STATUS: ALPHA
+Work to do...
+- Progress scripts to completion over initial plans, think into these plans along the way
+- Implement upcoming charges, to enter up to 3 known upcoming charges to your finances, to plan better for these events, this can be expanded upon later if neccessary.
+
+### DESCRIPTION
 - Finanace planner details still to be finalized, prediction and history, ascii line graphs and numbers.
 
 ### FEATURES
