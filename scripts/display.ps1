@@ -1,5 +1,3 @@
-. .\scripts\utility.ps1
-
 function Main-Menu {
     Clear-Host
     Write-Host "Personal Finance Tracker"
@@ -42,9 +40,19 @@ function Update-FinancialRecord {
 
 function Create-Graph {
     $config = Load-Configuration
-    # Logic to create the ASCII art graph goes here
+    $graph = ""
+
+    # Analyze day records and create ASCII representation
+    # - Apply logic to represent each day with the appropriate character
+    # - Implement prediction logic based on historical data
+    # - Ensure the graph centers around the current day
+
     # Placeholder for detailed graph creation logic
+
+    return $graph
 }
+
+
 
 function Display-Graph {
     Write-Host (Create-Graph)
@@ -57,7 +65,7 @@ function Display-FinancialSummary {
     Write-Host "Day Credit Low: $($config.DayCreditLow)"
     Write-Host "Day Credit High: $($config.DayCreditHigh)"
     Write-Host "Day Credit Now: $($config.DayCreditNow)"
-    # Display additional summary information as needed
+    # Additional summary information can be added here as needed
 }
 
 # Placeholder for additional display-related functions
