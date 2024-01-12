@@ -8,4 +8,4 @@
 - ** Daily Rotation ** Upon events of, booting and next day, the graph will be kept current, the keys will be checked against the system date/time hourly.
 
 ### NOTES
-- The average number of days in a year, accounting for leap years, is 365.25. The average number of days in a month, accounting for leap years, is approximately 30.4375. Thats 1/8 or 3 hours, 1 for each 2 main solstice days. Unfortunately such logic is not applicable to the program, as the user would eventually go noticbly out of synchronicity with the systems that use Gregorian calendar.
+- The average number of days in a year, accounting for leap years, is 365.25. The average number of days in a month, accounting for leap years, is approximately 30.4375. Thats 1/8 or 3 hours, 1 for each 2 main solstice days. Unfortunately such logic is not applicable to the program, as the user would eventually go noticbly out of synchronicity with the systems that use Gregorgian calendar.
