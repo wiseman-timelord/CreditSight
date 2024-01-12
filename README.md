@@ -10,4 +10,3 @@
 ### NOTES
 - The average number of days in a year, accounting for leap years, is 365.25. The average number of days in a month, accounting for leap years, is approximately 30.4375. Thats 1/8 or 3 hours, 1 for each 2 main solstice days. 
 - the average year length in the Gregorian calendar system is designed to be 365.2425 days, the actual figure is again is 365.25 days, so that means Gregorian is 0.01 percent innaccurate, and thats, 14.4 minutes every year and 43.2 minutes every four years, out of syncronisity with the actual time.
-- Unfortunately such logic is not applicable to the program, as the program uses the system clock.  
