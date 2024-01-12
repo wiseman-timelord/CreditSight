@@ -6,4 +6,6 @@ Finanace planner details still to be finalized, prediction and history, ascii li
 - **Line Graphs** Each character on the line graph represents a day's financial change. The graph will be constructed as an array of strings, where each string is a line in the graph.
 - **Band Thickness** The thickness of the band in the prediction graph will represent the uncertainty or volatility in the prediction. A wider band indicates greater uncertainty.
 
-
+### NOTES
+* The average number of days in a year, accounting for leap years, is 365.25.
+* The average number of days in a month, accounting for leap years, is approximately 30.4375.
