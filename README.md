@@ -11,4 +11,4 @@ Work to do...
 ### FEATURES
 - ** Credit Visualization ** On the History line graph each character represents a day's financial change, the graph will be constructed as an array of strings, where each string is a line in the graph. £ for credit, * for top 50% credit, x for debt, X for top 50% debt.
 - ** Volatility Prediction ** The thickness of the band in the prediction graph will represent the uncertainty or volatility in the prediction. 
-- ** Daily Rotation ** ayRecords_10 should rotate every 10 days, and DayRecords_100 every 100 days. PowerShell's array slicing can be utilized to shift elements in the array efficiently.
+- ** Daily Rotation ** Records_10 should rotate every 10 days, and DayRecords_100 every 100 days. PowerShell's array slicing can be utilized to shift elements in the array efficiently.
