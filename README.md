@@ -14,3 +14,7 @@ Work to do...
 - ** Intelligent Ascii Graphs ** £ for credit, * for top 50% credit, x for debt, X for top 50% debt.
 - ** Volatility Prediction ** The thickness of the band in the prediction graph will represent the uncertainty or volatility in the prediction. 
 - ** Daily Rotation ** Records_10 should rotate every 10 days, and DayRecords_100 every 100 days, thus producing 3 years of, prediction ability and historic recording.
+
+### DISCLAIMER
+
+This program is provided "as is" without warranties or support. Users are responsible for the content they, download and use, as well as, any resulting damage to, hardware or sanity.
