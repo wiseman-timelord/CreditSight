@@ -2,12 +2,12 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Progress scripts to completion over initial plans, think into these plans along the way
-- Implement upcoming charges, to enter up to 3 known upcoming charges to your finances, in addition to a reoccurring monthly amount, this will all affect the prediction graph.
+- Finish updates to "Create-PredictionGraph"
+- Progress scripts to completion over initial plans, think into these plans along the way.
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
 ### DESCRIPTION
-- Finanace planner details still to be finalized, prediction and history, ascii line graphs and numbers. 
+CreditSight is a PowerShell-based personal finance tracking application designed to provide users with an in-depth view of their financial status. It focuses on visualizing financial data through graphs and maintaining a detailed record of financial changes over time.
 
 ### FEATURES
 - ** Credit Visualization ** On the History line graph each character represents a scaled period of financial change, the graph will be constructed, a string of, history and prediction.
@@ -16,5 +16,4 @@ Work to do...
 - ** Daily Rotation ** Records_10 should rotate every 10 days, and DayRecords_100 every 100 days, thus producing 3 years of, prediction ability and historic recording.
 
 ### DISCLAIMER
-
-This program is provided "as is" without warranties or support. Users are responsible for the content they, download and use, as well as, any resulting damage to, hardware or sanity.
+Read "Licence.Txt", its, what its there for and supplied with the package.
