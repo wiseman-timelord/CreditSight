@@ -2,7 +2,8 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Finish updates to "Create-PredictionGraph"
+- All code is 99% present, optimize code, combining similar functions and making them more dynamic.
+- Check scripts are using the time periods correctly, entsure to go through the logic of it.
 - Progress scripts to completion over initial plans, think into these plans along the way.
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
@@ -13,7 +14,7 @@ CreditSight is a PowerShell-based personal finance tracking application designed
 - **Credit Visualization**: Visualizes financial changes using a line graph, where each character on the graph represents a scaled period of financial change, combining both history and prediction.
 - **Intelligent ASCII Graphs**: Utilizes different characters to represent various financial states - £ for credit, * for higher credit values, x for debt, and X for significant debt.
 - **Volatility Prediction**: Displays prediction uncertainty through the thickness of the band in the prediction graph, indicating the volatility of future financial trends.
-- **Daily Record Rotation**: Features a rotating record system where `DayRecords_10` updates every 10 days and `DayRecords_100` every 100 days, enabling three years of predictive capability and historical record-keeping.
+- **Daily Record Rotation**: Features a rotating record system where `DayRecords_10` updates every 10 days and `DayRecords_100` every 100 days, enabling three tiers of predictive capability and historical record-keeping, totalling, 1110 days or 3 years, of history/prediction.
 
 ### PREVIEW
 ARRrrhhh, das nicht compute..
