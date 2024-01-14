@@ -4,7 +4,7 @@
 function Display-GraphAndSummary {
     Display-Graph
     Display-FinancialSummary
-    Write-Host "`nSelect, Credit Change=C, Monthly Charge=M, Exit Program=X: " -NoNewline
+    Write-Host "`nOptions: C, M, X: " -NoNewline
 }
 
 # Function Handle Userinput
@@ -20,52 +20,40 @@ function Handle-UserInput {
 
 # Function Performexitroutine
 function PerformExitRoutine {
-    Write-Host "Exiting CreditSight..."
+    Write-Host "Exiting..."
     Exit
 }
 
 # Function Prompt UserInput
 function Prompt-UserInput {
     param($inputType)
-    $inputPrompt = $inputType -eq "CreditChange" ? "Credit Change Amount=" : "Total Monthly Expense="
-    $change = Read-Host $inputPrompt
+    $prompt = $inputType -eq "CreditChange" ? "Amount=" : "Expense="
+    $change = Read-Host $prompt
     if ($change -match '^-?\d+$') {
         Update-FinancialData -amountChange $change -inputType $inputType
     } else {
-        Write-Host "Enter valid number."
+        Write-Host "Invalid number."
     }
 }
 
 # Function Update Financialrecord
 function Update-FinancialRecord {
-    $amountChange = Read-Host "Enter Amount Change"
+    $amountChange = Read-Host "Amount Change:"
     if ($amountChange -match '^-?\d+$') {
         Update-FinancialData $amountChange
-        Write-Host "Finance record updated."
+        Write-Host "Record updated."
     } else {
-        Write-Host "Invalid Currency Amount."
+        Write-Host "Invalid amount."
     }
 }
 
 # Create Graph
 function Create-Graph {
-    param(
-        [string]$graphType,
-        [int]$graphWidth,
-        [int]$graphHeight
-    )
+    param([string]$graphType, [int]$graphWidth, [int]$graphHeight)
     switch ($graphType) {
-        "Prediction" {
-            $predictionGraph = Create-PredictionGraph -graphWidth $graphWidth -graphHeight $graphHeight
-            return $predictionGraph
-        }
-        "History" {
-            $historyGraph = Create-HistoryGraph -graphWidth $graphWidth -graphHeight $graphHeight
-            return $historyGraph
-        }
-        default {
-            Write-Host "Invalid graph type: $graphType"
-        }
+        "Prediction" { Create-PredictionGraph $graphWidth $graphHeight }
+        "History" { Create-HistoryGraph $graphWidth $graphHeight }
+        default { Write-Host "Invalid type: $graphType" }
     }
 }
 
@@ -77,14 +65,12 @@ function Create-PredictionGraph {
     )
     $predictionGraph = @()
     $predictedValues = Get-PredictedValues $global:config.HistoryKeys
-
     foreach ($predictedValue in $predictedValues) {
         $historicalVolatility = $global:config.IntermittantKeys.HighestCreditHigh - $global:config.IntermittantKeys.LowestCreditLow
         $dailyVolatility = $global:config.CurrentKeys.DayCreditHigh - $global:config.CurrentKeys.DayCreditLow
         $volatility = [math]::Max($historicalVolatility, $dailyVolatility)
         $startY = [math]::Max(0, $predictedValue - $volatility / 2)
         $endY = [math]::Min($graphHeight - 1, $predictedValue + $volatility / 2)
-
         $line = (' ' * $graphWidth).ToCharArray()
         for ($y = $startY; $y -le $endY; $y++) {
             if ($y -ge 0 -and $y -lt $line.Length) {
@@ -95,7 +81,6 @@ function Create-PredictionGraph {
     }
     return $predictionGraph -join "`n"
 }
-
 
 # Function Create History Graph
 function Create-HistoryGraph {
@@ -123,19 +108,18 @@ function Create-HistoryGraph {
     return $historyGraph -join "`n"
 }
 
-
 # Function Display Graph
 function Display-Graph {
-    Write-Host (Create-Graph)
+    Write-Host (Create-Graph "History" $global:graphWidth $global:graphHeight)
 }
 
 # Function Display Financialsummary
 function Display-FinancialSummary {
-    $config = Load-Configuration
-    Write-Host "Current Total: $($config.CurrentKeys.CurrentTotal)"
-    Write-Host "Last Finance Change: $($config.CurrentKeys.LastFinanceChange)"
-    Write-Host "Day Credit Low: $($config.CurrentKeys.DayCreditLow)"
-    Write-Host "Day Credit High: $($config.CurrentKeys.DayCreditHigh)"
-    Write-Host "Day Credit Now: $($config.CurrentKeys.DayCreditNow)"
-    Write-Host "Monthly Expenses: $($config.IntermittantKeys.MonthlyExpenses)"
+    $config = Manage-ConfigSettings -action "Load"
+    Write-Host "Total: $($config.CurrentKeys.CurrentTotal)"
+    Write-Host "Last Change: $($config.CurrentKeys.LastFinanceChange)"
+    Write-Host "Low: $($config.CurrentKeys.DayCreditLow)"
+    Write-Host "High: $($config.CurrentKeys.DayCreditHigh)"
+    Write-Host "Now: $($config.CurrentKeys.DayCreditNow)"
+    Write-Host "Expenses: $($config.IntermittantKeys.MonthlyExpenses)"
 }

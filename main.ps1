@@ -1,19 +1,18 @@
 # Script: main.ps1
 
-# Initialization
+# Initialization and Imports
 Write-Host "`n`CreditSight Started....`n`n"
+. .\scripts\utility.ps1   # Utility Functions
+. .\scripts\display.ps1   # Display Functions
+. .\scripts\config.ps1    # Configuration Management
 
-# Improrts
-. .\scripts\utility.ps1
-. .\scripts\display.ps1
-
-# Variables
+# Global Variables
 $global:graphWidth = 50
 $global:graphHeight = 10
-$global:config = Load-Configuration
-$global:filePath = 'scripts/configuration.psd1'
+$global:filePath = 'scripts/settings.psd1'
+$global:config = Manage-ConfigSettings -action "Load" # Centralized Config Loading
 
-# Function Log Error
+# Error Logging Function
 function Log-Error {
     param($ErrorMessage)
     $logFilePath = ".\Error-Crash.Log"
@@ -23,21 +22,25 @@ function Log-Error {
         Add-Content -Path $logFilePath -Value $logEntry
     }
     catch {
-        Write-Host "Error logging failed. Please check file permissions."
+        Write-Host "Error logging failed: $_"
     }
 }
 
-# Variables
-$config = Load-Configuration
-if ($config.LastRotation1Day -eq '01/01/0000') {
+# First-Run Initialize Dates
+if ($global:config.DatingKeys.LastRotation1Day -eq '01/01/0000') {
     $currentDate = Get-Date -Format "MM/dd/yyyy"
-    $config.LastRotation1Day = $config.LastRotation10Days = $config.LastRotation100Days = $currentDate
-    Save-Configuration $config
+    $global:config.DatingKeys.LastRotation1Day = $global:config.DatingKeys.LastRotation10Days = $global:config.DatingKeys.LastRotation100Days = $currentDate
+    Manage-ConfigSettings -action "Save" -config $global:config
 }
 
-# Entry Point
-Start-Sleep -Seconds 1
-while ($true) {
-    Display-GraphAndSummary
-    Handle-UserInput
+# Main Execution Loop
+try {
+    Start-Sleep -Seconds 1
+    while ($true) {
+        Display-GraphAndSummary
+        Handle-UserInput
+    }
+} catch {
+    Log-Error $_.Exception.Message
+    Write-Host "An unexpected error occurred."
 }
