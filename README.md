@@ -2,7 +2,6 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Improve and optimize, "config.ps1", at same time fix corruption of psd1 file, this happened after, refractoring and dynamic function update (older code is not from before segmenting psd1). 
 - Check for Redundant functions.
 - The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1), ie, personal, trading, business, etc, with differing, history and credit. 
 - Progress scripts to completion over initial plans, think into these plans along the way.
