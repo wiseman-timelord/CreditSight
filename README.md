@@ -3,8 +3,10 @@
 ### STATUS: ALPHA
 Work to do...
 - Check for Redundant functions & logic issues.
+- display of "Last Finance Change:" is empty.
+- Improve layout of, stats & prompted, options.
 - Fix graph generation.
-- Improve layout of, graphs & stats & prompted options.
+- Improve layout of graphs.
 - try put borders on graphs.
 - The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1), ie, personal, trading, business, etc, with differing, history and credit. 
 - Improve layout of new profile menu.
