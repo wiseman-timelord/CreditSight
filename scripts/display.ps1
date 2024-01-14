@@ -2,7 +2,7 @@
 
 # Function Display Graphandsummary
 function Display-GraphAndSummary {
-    Clear-Host
+    # Clear-Host
     Display-Graph
     Display-FinancialSummary
     Write-Host "`nSelect, Credit Change=C, Monthly Charge=M, Exit Program=X: " -NoNewline
@@ -70,36 +70,59 @@ function Create-PredictionGraph($config) {
     $graphWidth = 50  
     $graphHeight = 10  
     $predictionGraph = @()
-    $predictedValues = Get-PredictedValues $config
+    $predictedValues = Get-PredictedValues $config.HistoryKeys
+
     foreach ($predictedValue in $predictedValues) {
-        $volatility = $config.DayCreditHigh - $config.DayCreditLow
+        $historicalVolatility = $config.IntermittantKeys.HighestCreditHigh - $config.IntermittantKeys.LowestCreditLow
+        $dailyVolatility = $config.CurrentKeys.DayCreditHigh - $config.CurrentKeys.DayCreditLow
+        $volatility = [math]::Max($historicalVolatility, $dailyVolatility)
+
         $startY = [math]::Max(0, $predictedValue - $volatility / 2)
-        $endY = [math]::Min($graphHeight, $predictedValue + $volatility / 2)
-        $line = [char]::WhiteSpace * $graphWidth
+        $endY = [math]::Min($graphHeight - 1, $predictedValue + $volatility / 2)
+        $line = (' ' * $graphWidth).ToCharArray()
+        
         for ($y = $startY; $y -le $endY; $y++) {
-            $line[$y] = "*"  
+            if ($y -ge 0 -and $y -lt $line.Length) {
+                $line[$y] = "*"
+            }
         }
-        $predictionGraph += $line
+        $predictionGraph += -join $line
     }
+
     $predictionGraph -join "`n"
 }
 
+
+
+
 # Function Create Historygraph
 function Create-HistoryGraph($config) {
-    $maxValue = ($config.DayRecords_1 + $config.DayRecords_10 + $config.DayRecords_100) | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
+    $maxValue = ($config.HistoryKeys.DayRecords_1 + $config.HistoryKeys.DayRecords_10 + $config.HistoryKeys.DayRecords_100) | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
+
+    if ($maxValue -eq 0) {
+        $maxValue = 1  # Avoid division by zero
+    }
+
     $graphWidth = 50  
     $graphHeight = 10  
     $scalingFactor = $graphHeight / $maxValue
     $historyGraph = @()
-    foreach ($value in $config.DayRecords_1 + $config.DayRecords_10 + $config.DayRecords_100) {
+
+    foreach ($value in $config.HistoryKeys.DayRecords_1 + $config.HistoryKeys.DayRecords_10 + $config.HistoryKeys.DayRecords_100) {
         $y = [math]::Round($value * $scalingFactor)
-        $line = [char]::WhiteSpace * $graphWidth
-        $line[$y] = "*"  
-        $historyGraph += $line
+        $line = (' ' * $graphWidth).ToCharArray()
+
+        if ($y -ge 0 -and $y -lt $line.Length) {
+            $line[$y] = "*"
+        }
+        $historyGraph += -join $line
     }
     [array]::Reverse($historyGraph)
     $historyGraph -join "`n"
 }
+
+
+
 
 # Function Display Graph
 function Display-Graph {
@@ -109,10 +132,11 @@ function Display-Graph {
 # Function Display Financialsummary
 function Display-FinancialSummary {
     $config = Load-Configuration
-    Write-Host "Current Total: $($config.CurrentTotal)"
-    Write-Host "Last Finance Change: $($config.LastFinanceChange)"
-    Write-Host "Day Credit Low: $($config.DayCreditLow)"
-    Write-Host "Day Credit High: $($config.DayCreditHigh)"
-    Write-Host "Day Credit Now: $($config.DayCreditNow)"
-	Write-Host "Monthly Expenses: $($config.MonthlyExpenses)"
+    Write-Host "Current Total: $($config.CurrentKeys.CurrentTotal)"
+    Write-Host "Last Finance Change: $($config.CurrentKeys.LastFinanceChange)"
+    Write-Host "Day Credit Low: $($config.CurrentKeys.DayCreditLow)"
+    Write-Host "Day Credit High: $($config.CurrentKeys.DayCreditHigh)"
+    Write-Host "Day Credit Now: $($config.CurrentKeys.DayCreditNow)"
+    Write-Host "Monthly Expenses: $($config.IntermittantKeys.MonthlyExpenses)"
 }
+

@@ -3,7 +3,7 @@
 # Initialization
 . .\scripts\utility.ps1
 . .\scripts\display.ps1
-Clear-Host
+# Clear-Host
 Write-Host "`n`CreditSight Started....`n`n"
 
 # Function Log Error Enhanced

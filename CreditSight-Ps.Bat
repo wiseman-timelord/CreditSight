@@ -1,5 +1,5 @@
 @echo off
-mode 55,85
+mode 120,80
 color 80
 title CreditSight
 echo.

@@ -2,8 +2,32 @@
 
 # Function Load Configuration
 function Load-Configuration {
-    return Import-PowerShellDataFile -Path 'scripts/configuration.psd1'
+    $filePath = 'scripts/configuration.psd1'
+    Write-Host "Attempting to load configuration from: $filePath"
+
+    if (Test-Path $filePath) {
+        Write-Host "Configuration file found."
+        try {
+            $config = Import-PowerShellDataFile -Path $filePath
+            Write-Host "Configuration loaded successfully."
+            # Combine all sections into one hashtable
+            return @{
+                DatingKeys = $config.DatingKeys
+                CurrentKeys = $config.CurrentKeys
+                IntermittantKeys = $config.IntermittantKeys
+                HistoryKeys = $config.HistoryKeys
+            }
+        } catch {
+            Write-Host "Failed to import configuration file. Error: $_"
+            throw
+        }
+    } else {
+        Write-Host "Configuration file not found at path: $filePath"
+        throw "Configuration file not found"
+    }
 }
+
+
 
 # Function Save Configuration
 function Save-Configuration ($config) {
@@ -37,16 +61,12 @@ function Update-FinancialData ($amountChange) {
         return
     }
     $config = Load-Configuration
-    Update-CurrentTotal $config $amountChange
-    Update-DailyRecords $config $amountChange
-	Update-HighLowRecords $config
+    Update-CurrentTotal $config.CurrentKeys $amountChange
+    Update-DailyRecords $config.HistoryKeys $amountChange
+    Update-HighLowRecords $config.IntermittantKeys $config.CurrentKeys
     Save-Configuration $config
 }
 
-function Update-HighLowRecords ($config) {
-    $config.HighestCreditHigh = [math]::Max($config.HighestCreditHigh, $config.DayCreditHigh)
-    $config.LowestCreditLow = [math]::Min($config.LowestCreditLow, $config.DayCreditLow)
-}
 
 # Function Rotate Higherorderrecords
 function Rotate-HigherOrderRecords ($config) {
@@ -74,19 +94,23 @@ function Handle-HigherOrderRecordsRotation ($config) {
     return $config
 }
 
-function Get-PredictedValues($config) {
+function Get-PredictedValues($historyKeys) {
     $predictedValues = @()
     $totalRecentChanges = 0
-    $numRecords = $config.DayRecords_1.Count
+    $numRecords = $historyKeys.DayRecords_1.Count
+
+    if ($numRecords -eq 0) {
+        return $predictedValues  # Return empty array if no records
+    }
 
     # Calculate the average of recent changes
     for ($i = 0; $i -lt $numRecords; $i++) {
-        $totalRecentChanges += $config.DayRecords_1[$i]
+        $totalRecentChanges += $historyKeys.DayRecords_1[$i]
     }
     $averageChange = $totalRecentChanges / $numRecords
 
     # Predict future values using the average change
-    $currentValue = $config.CurrentTotal
+    $currentValue = $historyKeys.DayRecords_1[-1]  # Starting from the most recent record
     for ($i = 0; $i -lt $numRecords; $i++) {
         $currentValue += $averageChange
         $predictedValues += $currentValue
@@ -94,6 +118,9 @@ function Get-PredictedValues($config) {
 
     return $predictedValues
 }
+
+
+
 
 
 # Function Abs
@@ -110,15 +137,25 @@ function Update-MonthlyExpenses ($newCharge) {
 }
 
 # Function Update Current Total with Precision Handling
-function Update-CurrentTotal ($config, $amountChange) {
-    $roundedChange = [math]::Round($amountChange, 2) # rounding to 2 decimal places
-    $config.CurrentTotal += $roundedChange
-    $config.LastFinanceChange = $roundedChange
+function Update-CurrentTotal ($currentKeys, $amountChange) {
+    $roundedChange = [math]::Round($amountChange, 2)
+    $currentKeys.CurrentTotal += $roundedChange
+    $currentKeys.LastFinanceChange = $roundedChange
 }
+
+
+
+function Update-HighLowRecords ($intermittantKeys, $currentKeys) {
+    $intermittantKeys.HighestCreditHigh = [math]::Max($intermittantKeys.HighestCreditHigh, $currentKeys.DayCreditHigh)
+    $intermittantKeys.LowestCreditLow = [math]::Min($intermittantKeys.LowestCreditLow, $currentKeys.DayCreditLow)
+}
+
+
 
 
 # Function Update Dailyrecords
-function Update-DailyRecords ($config, $amountChange) {
-    Rotate-DailyRecords ([ref]$config.DayRecords_1) $amountChange
-    Handle-HigherOrderRecordsRotation $config
+function Update-DailyRecords ($historyKeys, $amountChange) {
+    Rotate-DailyRecords ([ref]$historyKeys.DayRecords_1) $amountChange
+    Handle-HigherOrderRecordsRotation $historyKeys
 }
+
