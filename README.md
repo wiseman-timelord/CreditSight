@@ -75,7 +75,7 @@ Day Credit High: 0
 Day Credit Now: 0
 Monthly Expenses: 0
 
-Select, Credit Change=C, Monthly Charge=M, Exit Program=X:
+Select, Credit Change = C, Set Monthly = M, Exit Program = X:
 ```
 
 ## DISCLAIMER
