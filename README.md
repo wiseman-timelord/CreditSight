@@ -7,13 +7,69 @@ Work to do...
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
 ### DESCRIPTION
-CreditSight is a PowerShell-based personal finance tracking application designed to provide users with an in-depth view of their financial status. It focuses on visualizing financial data through graphs and maintaining a detailed record of financial changes over time.
+CreditSight is a PowerShell-based personal finance tracking application designed to provide users with a comprehensive view of their financial status. It focuses on visualizing financial data through graphs and maintaining detailed records of financial changes over time.
 
 ### FEATURES
-- ** Credit Visualization ** On the History line graph each character represents a scaled period of financial change, the graph will be constructed, a string of, history and prediction.
-- ** Intelligent Ascii Graphs ** £ for credit, * for top 50% credit, x for debt, X for top 50% debt.
-- ** Volatility Prediction ** The thickness of the band in the prediction graph will represent the uncertainty or volatility in the prediction. 
-- ** Daily Rotation ** Records_10 should rotate every 10 days, and DayRecords_100 every 100 days, thus producing 3 years of, prediction ability and historic recording.
+- **Credit Visualization**: Visualizes financial changes using a line graph, where each character on the graph represents a scaled period of financial change, combining both history and prediction.
+- **Intelligent ASCII Graphs**: Utilizes different characters to represent various financial states - £ for credit, * for higher credit values, x for debt, and X for significant debt.
+- **Volatility Prediction**: Displays prediction uncertainty through the thickness of the band in the prediction graph, indicating the volatility of future financial trends.
+- **Daily Record Rotation**: Features a rotating record system where `DayRecords_10` updates every 10 days and `DayRecords_100` every 100 days, enabling three years of predictive capability and historical record-keeping.
+
+### PREVIEW
+ARRrrhhh, das nicht compute..
+```
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+Attempting to load configuration from: scripts/configuration.psd1
+Configuration file found.
+Configuration loaded successfully.
+Current Total: 0.00
+Last Finance Change:
+Day Credit Low: 0
+Day Credit High: 0
+Day Credit Now: 0
+Monthly Expenses: 0
+
+Select, Credit Change=C, Monthly Charge=M, Exit Program=X:
+```
 
 ## DISCLAIMER
 This software is subject to the terms in License.Txt, covering usage, distribution, and modifications. For full details on your rights and obligations, refer to License.Txt.
