@@ -3,7 +3,6 @@
 ### STATUS: ALPHA
 Work to do...
 - All code is 99% present, optimize code, combining similar functions and making them more dynamic.
-- Check scripts are using the time periods correctly, entsure to go through the logic of it, 10x1 + 10x10 + 10x100 = 1110 days of recorded credit levels. relating to the keys in the psd1. 
 - Progress scripts to completion over initial plans, think into these plans along the way.
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
