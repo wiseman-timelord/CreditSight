@@ -20,7 +20,7 @@ function ConvertTo-Psd1Content {
     return $content
 }
 
-# Function Manage ConfigSettings
+# Updated Function: Manage-ConfigSettings
 function Manage-ConfigSettings {
     param(
         [Parameter(Mandatory)]
@@ -29,6 +29,12 @@ function Manage-ConfigSettings {
         [hashtable]$config,
         [string]$filePath = 'scripts/settings.psd1'
     )
+    
+    if ($action -eq "Save" -and $null -eq $config) {
+        Write-Host "Empty Config Data"
+        return
+    }
+    
     switch ($action) {
         "Load" {
             if (Test-Path $filePath) {
@@ -37,24 +43,23 @@ function Manage-ConfigSettings {
                     return $config
                 } catch {
                     Write-Host "Load Error: $_"
-                    throw
+                    Log-Error "Load Error: $_" # Enhanced error handling with hypothetical Log-Error function
+                    return $null
                 }
             } else {
                 Write-Host "Config Missing: $filePath"
+                Log-Error "Config Missing: $filePath" # Enhanced error handling
                 throw "Config Missing"
             }
         }
         "Save" {
-            if ($null -eq $config) {
-                Write-Host "Empty Config Data"
-                return
-            }
             try {
                 $psd1Content = ConvertTo-Psd1Content -Hashtable $config
                 $psd1Content | Out-File -FilePath $filePath
                 Write-Host "Config Saved"
             } catch {
-                Write-Host "Save Error"
+                Write-Host "Save Error: $_"
+                Log-Error "Save Error: $_" # Enhanced error handling
             }
         }
         default {
@@ -62,3 +67,4 @@ function Manage-ConfigSettings {
         }
     }
 }
+

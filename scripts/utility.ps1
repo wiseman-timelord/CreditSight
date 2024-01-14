@@ -1,16 +1,25 @@
 # Script: utility.ps1
 
-# Function Rotate Dailyrecords
-function Rotate-DailyRecords ([ref]$dayRecords, $newRecord) {
+# Function Rotate-Records
+function Rotate-Records {
+    param(
+        [ref]$dayRecords,
+        $newRecord,
+        $config,
+        $rotationInterval,
+        $dayRecordField,
+        $lastRotationField
+    )
     $dayRecords.Value = $dayRecords.Value[1..9] + @($newRecord)
-}
 
-# Function Rotate Higherorderrecords
-function Rotate-HigherOrderRecords ($config) {
     $currentDate = Get-Date
-    Process-Rotation -config $config -rotationInterval 10 -dayRecordField "DayRecords_10" -lastRotationField "LastRotation10Day"
-    Process-Rotation -config $config -rotationInterval 100 -dayRecordField "DayRecords_100" -lastRotationField "LastRotation100Day"
-    return $config
+    $daysSinceLastRotation = ($currentDate - $config.DatingKeys.$lastRotationField).Days
+    if ($daysSinceLastRotation -ge $rotationInterval) {
+        $sumRotationPeriod = ($config.HistoryKeys.$dayRecordField | Measure-Object -Sum).Sum
+        $dayRecords.Value = $dayRecords.Value[1..9] + @($sumRotationPeriod)
+        $config.DatingKeys.$lastRotationField = $currentDate
+        Manage-ConfigSettings -action "Save" -config $config
+    }
 }
 
 # Function Process Rotation
@@ -75,32 +84,9 @@ function Update-FinancialRecords {
         [int]$amountChange
     )
     $config = Manage-ConfigSettings -action "Load"
-    Rotate-DailyRecords $historyKeys.Value.DayRecords_1 $amountChange
-    Update-RotationRecords -historyKeys $historyKeys.Value -config $config -rotationInterval 10 -dayRecordsField "DayRecords_10" -lastRotationField "LastRotation10Days"
-    Update-RotationRecords -historyKeys $historyKeys.Value -config $config -rotationInterval 100 -dayRecordsField "DayRecords_100" -lastRotationField "LastRotation100Days"
+    Rotate-Records -dayRecords $historyKeys.Value.DayRecords_1 -newRecord $amountChange -config $config -rotationInterval 10 -dayRecordField "DayRecords_10" -lastRotationField "LastRotation10Days"
+    Rotate-Records -dayRecords $historyKeys.Value.DayRecords_1 -newRecord $amountChange -config $config -rotationInterval 100 -dayRecordField "DayRecords_100" -lastRotationField "LastRotation100Days"
     Manage-ConfigSettings -action "Save" -config $config
-}
-
-function Update-RotationRecords {
-    param(
-        [Parameter(Mandatory = $true)]
-        $historyKeys,
-        [Parameter(Mandatory = $true)]
-        $config,
-        [Parameter(Mandatory = $true)]
-        $rotationInterval,
-        [Parameter(Mandatory = $true)]
-        $dayRecordsField,
-        [Parameter(Mandatory = $true)]
-        $lastRotationField
-    )
-    $currentDate = Get-Date
-    $daysSinceLastRotation = ($currentDate - $config.DatingKeys.$lastRotationField).Days
-    if ($daysSinceLastRotation -ge $rotationInterval) {
-        $sumRotationPeriod = ($historyKeys.$dayRecordsField | Measure-Object -Sum).Sum
-        Rotate-DailyRecords ([ref]$historyKeys.$dayRecordsField) $sumRotationPeriod
-        $config.DatingKeys.$lastRotationField = $currentDate
-    }
 }
 
 # Function Update Monthlyexpenses
