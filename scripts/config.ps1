@@ -1,30 +1,42 @@
 # Script: config.ps1
 
-# Function Manage Settings
+# function ConvertTo-Psd1Content 
+function ConvertTo-Psd1Content {
+    param([hashtable]$Hashtable)
+    $content = "@{"
+    foreach ($key in $Hashtable.Keys) {
+        $value = $Hashtable[$key]
+        if ($value -is [hashtable]) {
+            $nestedContent = ConvertTo-Psd1Content -Hashtable $value
+            $content += "`n    $key = $nestedContent"
+        } elseif ($value -is [System.Array]) {
+            $arrayContent = $value -join ', '
+            $content += "`n    $key = @($arrayContent)"
+        } else {
+            $content += "`n    $key = '$value'"
+        }
+    }
+    $content += "`n}"
+    return $content
+}
+
+# Function Manage ConfigSettings
 function Manage-ConfigSettings {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory)]
         [string]$action,
         [Parameter()]
-        [hashtable]$config
+        [hashtable]$config,
+        [string]$filePath = 'scripts/settings.psd1'
     )
-    $filePath = 'scripts/settings.psd1'
     switch ($action) {
         "Load" {
-            Write-Host "Loading: $filePath.."
             if (Test-Path $filePath) {
-                Write-Host "$filePath Found."
                 try {
                     $config = Import-PowerShellDataFile -Path $filePath
-                    Write-Host "Config Loaded."
-                    return @{
-                        DatingKeys = $config.DatingKeys
-                        CurrentKeys = $config.CurrentKeys
-                        IntermittantKeys = $config.IntermittantKeys
-                        HistoryKeys = $config.HistoryKeys
-                    }
+                    return $config
                 } catch {
-                    Write-Host "Load Failed: Error: $_"
+                    Write-Host "Load Error: $_"
                     throw
                 }
             } else {
@@ -34,29 +46,19 @@ function Manage-ConfigSettings {
         }
         "Save" {
             if ($null -eq $config) {
-                Write-Host "Config Data Empty."
+                Write-Host "Empty Config Data"
                 return
             }
-            $psd1Content = "@{"
-            foreach ($key in $config.Keys) {
-                $value = $config[$key]
-                if ($value -is [System.Array]) {
-                    $arrayContent = $value -join ' '
-                    $psd1Content += "`n    $key = @($arrayContent)"
-                } else {
-                    $psd1Content += "`n    $key = '$value'"
-                }
-            }
-            $psd1Content += "`n}"
             try {
+                $psd1Content = ConvertTo-Psd1Content -Hashtable $config
                 $psd1Content | Out-File -FilePath $filePath
-                Write-Host "Config Saved."
+                Write-Host "Config Saved"
             } catch {
-                Write-Host "Save Failed."
+                Write-Host "Save Error"
             }
         }
         default {
-            Write-Host "Invalid action."
+            Write-Host "Invalid Action"
         }
     }
 }
