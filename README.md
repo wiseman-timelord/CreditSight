@@ -2,7 +2,8 @@
 
 ### STATUS: ALPHA
 Work to do...
-- All code is 99% present, optimize code, combining similar functions and making them more dynamic.
+- Check for Redundant functions.
+- Refractor code from utility.
 - Progress scripts to completion over initial plans, think into these plans along the way.
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
