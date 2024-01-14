@@ -10,6 +10,8 @@ Write-Host "`n`CreditSight Started....`n`n"
 # Variables
 $global:graphWidth = 50
 $global:graphHeight = 10
+$global:config = Load-Configuration
+$global:filePath = 'scripts/configuration.psd1'
 
 # Function Log Error
 function Log-Error {

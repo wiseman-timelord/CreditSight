@@ -11,12 +11,12 @@ function Manage-Configuration {
     $filePath = 'scripts/configuration.psd1'
     switch ($action) {
         "Load" {
-            Write-Host "Attempting to load configuration from: $filePath"
+            Write-Host "Loading: $filePath.."
             if (Test-Path $filePath) {
-                Write-Host "Configuration file found."
+                Write-Host "$filePath Found."
                 try {
                     $config = Import-PowerShellDataFile -Path $filePath
-                    Write-Host "Configuration loaded successfully."
+                    Write-Host "Config Loaded."
                     return @{
                         DatingKeys = $config.DatingKeys
                         CurrentKeys = $config.CurrentKeys
@@ -24,17 +24,17 @@ function Manage-Configuration {
                         HistoryKeys = $config.HistoryKeys
                     }
                 } catch {
-                    Write-Host "Failed to import configuration file. Error: $_"
+                    Write-Host "Load Failed: Error: $_"
                     throw
                 }
             } else {
-                Write-Host "Configuration file not found at path: $filePath"
-                throw "Configuration file not found"
+                Write-Host "Config Missing: $filePath"
+                throw "Config Missing"
             }
         }
         "Save" {
             if ($null -eq $config) {
-                Write-Host "No configuration data provided to save."
+                Write-Host "Config Data Empty."
                 return
             }
             $psd1Content = "@{"
@@ -50,13 +50,13 @@ function Manage-Configuration {
             $psd1Content += "`n}"
             try {
                 $psd1Content | Out-File -FilePath $filePath
-                Write-Host "Configuration saved successfully."
+                Write-Host "Config Saved."
             } catch {
-                Write-Host "Failed to save configuration. Please check file permissions."
+                Write-Host "Save Failed."
             }
         }
         default {
-            Write-Host "Invalid action specified. Please use 'Load' or 'Save'."
+            Write-Host "Invalid action."
         }
     }
 }
@@ -76,7 +76,7 @@ function Update-FinancialData {
     )
 
     if (-not [int]::TryParse($amountChange, [ref]$null)) {
-        Write-Host "Invalid amount change. Please enter a valid number."
+        Write-Host "Invalid Number."
         return
     }
     $config = Manage-Configuration -action "Load"
@@ -121,20 +121,26 @@ function Get-PredictedValues($historyKeys) {
     $predictedValues = @()
     $totalRecentChanges = 0
     $numRecords = $historyKeys.DayRecords_1.Count
+
     if ($numRecords -eq 0) {
         return $predictedValues  
     }
+
     for ($i = 0; $i -lt $numRecords; $i++) {
         $totalRecentChanges += $historyKeys.DayRecords_1[$i]
     }
+
     $averageChange = $totalRecentChanges / $numRecords
-    $currentValue = $historyKeys.DayRecords_1[-1]  
+    $currentValue = $historyKeys.DayRecords_1[-1]
+
     for ($i = 0; $i -lt $numRecords; $i++) {
         $currentValue += $averageChange
         $predictedValues += $currentValue
     }
+
     return $predictedValues
 }
+
 
 # Function Abs
 function Abs($number) {
@@ -149,17 +155,26 @@ function Update-MonthlyExpenses ($newCharge) {
     Save-Configuration $config
 }
 
-# Function Update Currenttotal
-function Update-CurrentTotal ($currentKeys, $amountChange) {
-    $roundedChange = [math]::Round($amountChange, 2)
-    $currentKeys.CurrentTotal += $roundedChange
-    $currentKeys.LastFinanceChange = $roundedChange
-}
-
-# Function Update Highlowrecords
-function Update-HighLowRecords ($intermittantKeys, $currentKeys) {
-    $intermittantKeys.HighestCreditHigh = [math]::Max($intermittantKeys.HighestCreditHigh, $currentKeys.DayCreditHigh)
-    $intermittantKeys.LowestCreditLow = [math]::Min($intermittantKeys.LowestCreditLow, $currentKeys.DayCreditLow)
+function Update-FinancialData {
+    param(
+        [string]$updateType,
+        [string]$amountChange
+    )
+    switch ($updateType) {
+        "CurrentTotal" {
+            $roundedChange = [math]::Round($amountChange, 2)
+            $global:config.CurrentKeys.CurrentTotal += $roundedChange
+            $global:config.CurrentKeys.LastFinanceChange = $roundedChange
+        }
+        "HighLowRecords" {
+            $global:config.IntermittantKeys.HighestCreditHigh = [math]::Max($global:config.IntermittantKeys.HighestCreditHigh, $global:config.CurrentKeys.DayCreditHigh)
+            $global:config.IntermittantKeys.LowestCreditLow = [math]::Min($global:config.IntermittantKeys.LowestCreditLow, $global:config.CurrentKeys.DayCreditLow)
+        }
+        default {
+            Write-Host "Invalid update type: $updateType"
+        }
+    }
+    Manage-Configuration -action "Save" -config $global:config
 }
 
 # Function Update FinancialRecords
@@ -170,6 +185,24 @@ function Update-FinancialRecords {
         [Parameter(Mandatory=$true)]
         [int]$amountChange
     )
+    # Update DayRecords_1
     Rotate-DailyRecords $historyKeys.DayRecords_1 $amountChange
-    Handle-HigherOrderRecordsRotation $historyKeys
+
+    # Check if 10 days have passed for DayRecords_10
+    if ($global:config.DatingKeys.LastRotation10Days.AddDays(10) -le (Get-Date)) {
+        $sumLast10Days = ($historyKeys.Value.DayRecords_1 | Measure-Object -Sum).Sum
+        Rotate-DailyRecords $historyKeys.DayRecords_10 $sumLast10Days
+        $global:config.DatingKeys.LastRotation10Days = Get-Date
+    }
+
+    # Check if 100 days have passed for DayRecords_100
+    if ($global:config.DatingKeys.LastRotation100Days.AddDays(100) -le (Get-Date)) {
+        $sumLast100Days = ($historyKeys.Value.DayRecords_10 | Measure-Object -Sum).Sum
+        Rotate-DailyRecords $historyKeys.DayRecords_100 $sumLast100Days
+        $global:config.DatingKeys.LastRotation100Days = Get-Date
+    }
+
+    # Save updated rotation dates
+    Manage-Configuration -action "Save" -config $global:config
 }
+
