@@ -4,7 +4,7 @@
 Work to do...
 - Improve and optimize, all scripts.
 - Check for Redundant functions.
-- The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu, to, create new or select existing, settings file, so as to have profiles, ie, personal, trading, business, etc, with differing, history and credit. 
+- The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1), ie, personal, trading, business, etc, with differing, history and credit. 
 - Progress scripts to completion over initial plans, think into these plans along the way.
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
