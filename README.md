@@ -6,7 +6,7 @@ Work to do...
 - Progress scripts to completion over initial plans, think into these plans along the way.
 - have option for toggle, bi-directional or 2 graphs (history, prediction). 
 
-### DESCRIPTION
+## DESCRIPTION
 CreditSight is a PowerShell-based personal finance tracking application designed to provide users with a comprehensive view of their financial status. It focuses on visualizing financial data through graphs and maintaining detailed records of financial changes over time.
 
 ### FEATURES
