@@ -2,7 +2,6 @@
 
 # Function Display Graphandsummary
 function Display-GraphAndSummary {
-    # Clear-Host
     Display-Graph
     Display-FinancialSummary
     Write-Host "`nSelect, Credit Change=C, Monthly Charge=M, Exit Program=X: " -NoNewline
@@ -25,21 +24,13 @@ function PerformExitRoutine {
     Exit
 }
 
-# Function Prompt Creditchange
-function Prompt-CreditChange {
-    $change = Read-Host "Enter Credit Change Amount="
+# Function Prompt UserInput
+function Prompt-UserInput {
+    param($inputType)
+    $inputPrompt = $inputType -eq "CreditChange" ? "Enter Credit Change Amount=" : "Enter New Total For Monthly Expenses="
+    $change = Read-Host $inputPrompt
     if ($change -match '^-?\d+$') {
-        Update-FinancialData $change
-    } else {
-        Write-Host "Enter valid number."
-    }
-}
-
-# Function Prompt Monthlycharge
-function Prompt-MonthlyCharge {
-    $newMonthlyCharge = Read-Host "Enter New Total For Monthly Expenses="
-    if ($newMonthlyCharge -match '^\d+$') {
-        Update-MonthlyExpenses $newMonthlyCharge
+        Update-FinancialData -amountChange $change -inputType $inputType
     } else {
         Write-Host "Enter valid number."
     }
@@ -65,64 +56,54 @@ function Create-Graph {
     return $graph
 }
 
-# Function Create Predictiongraph
-function Create-PredictionGraph($config) {
-    $graphWidth = 50  
-    $graphHeight = 10  
-    $predictionGraph = @()
-    $predictedValues = Get-PredictedValues $config.HistoryKeys
-
-    foreach ($predictedValue in $predictedValues) {
-        $historicalVolatility = $config.IntermittantKeys.HighestCreditHigh - $config.IntermittantKeys.LowestCreditLow
-        $dailyVolatility = $config.CurrentKeys.DayCreditHigh - $config.CurrentKeys.DayCreditLow
-        $volatility = [math]::Max($historicalVolatility, $dailyVolatility)
-
-        $startY = [math]::Max(0, $predictedValue - $volatility / 2)
-        $endY = [math]::Min($graphHeight - 1, $predictedValue + $volatility / 2)
-        $line = (' ' * $graphWidth).ToCharArray()
-        
-        for ($y = $startY; $y -le $endY; $y++) {
+# In display.ps1
+function Create-DynamicGraph {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$graphType,
+        [Parameter(Mandatory=$true)]
+        [int]$graphWidth,
+        [Parameter(Mandatory=$true)]
+        [int]$graphHeight
+    )
+    if ($graphType -eq "Prediction") {
+        $predictionGraph = @()
+        $predictedValues = Get-PredictedValues $config.HistoryKeys
+        foreach ($predictedValue in $predictedValues) {
+            $historicalVolatility = $config.IntermittantKeys.HighestCreditHigh - $config.IntermittantKeys.LowestCreditLow
+            $dailyVolatility = $config.CurrentKeys.DayCreditHigh - $config.CurrentKeys.DayCreditLow
+            $volatility = [math]::Max($historicalVolatility, $dailyVolatility)
+            $startY = [math]::Max(0, $predictedValue - $volatility / 2)
+            $endY = [math]::Min($graphHeight - 1, $predictedValue + $volatility / 2)
+            $line = (' ' * $graphWidth).ToCharArray()
+            for ($y = $startY; $y -le $endY; $y++) {
+                if ($y -ge 0 -and $y -lt $line.Length) {
+                    $line[$y] = "*"
+                }
+            }
+            $predictionGraph += -join $line
+        }
+        return $predictionGraph -join "`n"
+    }
+    elseif ($graphType -eq "History") {
+        $maxValue = ($config.HistoryKeys.DayRecords_1 + $config.HistoryKeys.DayRecords_10 + $config.HistoryKeys.DayRecords_100) | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
+        if ($maxValue -eq 0) {
+            $maxValue = 1
+        }
+        $scalingFactor = $graphHeight / $maxValue
+        $historyGraph = @()
+        foreach ($value in $config.HistoryKeys.DayRecords_1 + $config.HistoryKeys.DayRecords_10 + $config.HistoryKeys.DayRecords_100) {
+            $y = [math]::Round($value * $scalingFactor)
+            $line = (' ' * $graphWidth).ToCharArray()
             if ($y -ge 0 -and $y -lt $line.Length) {
                 $line[$y] = "*"
             }
+            $historyGraph += -join $line
         }
-        $predictionGraph += -join $line
+        [array]::Reverse($historyGraph)
+        return $historyGraph -join "`n"
     }
-
-    $predictionGraph -join "`n"
 }
-
-
-
-
-# Function Create Historygraph
-function Create-HistoryGraph($config) {
-    $maxValue = ($config.HistoryKeys.DayRecords_1 + $config.HistoryKeys.DayRecords_10 + $config.HistoryKeys.DayRecords_100) | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
-
-    if ($maxValue -eq 0) {
-        $maxValue = 1  # Avoid division by zero
-    }
-
-    $graphWidth = 50  
-    $graphHeight = 10  
-    $scalingFactor = $graphHeight / $maxValue
-    $historyGraph = @()
-
-    foreach ($value in $config.HistoryKeys.DayRecords_1 + $config.HistoryKeys.DayRecords_10 + $config.HistoryKeys.DayRecords_100) {
-        $y = [math]::Round($value * $scalingFactor)
-        $line = (' ' * $graphWidth).ToCharArray()
-
-        if ($y -ge 0 -and $y -lt $line.Length) {
-            $line[$y] = "*"
-        }
-        $historyGraph += -join $line
-    }
-    [array]::Reverse($historyGraph)
-    $historyGraph -join "`n"
-}
-
-
-
 
 # Function Display Graph
 function Display-Graph {
@@ -139,4 +120,3 @@ function Display-FinancialSummary {
     Write-Host "Day Credit Now: $($config.CurrentKeys.DayCreditNow)"
     Write-Host "Monthly Expenses: $($config.IntermittantKeys.MonthlyExpenses)"
 }
-

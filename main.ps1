@@ -1,12 +1,17 @@
 # Script: main.ps1
 
 # Initialization
-. .\scripts\utility.ps1
-. .\scripts\display.ps1
-# Clear-Host
 Write-Host "`n`CreditSight Started....`n`n"
 
-# Function Log Error Enhanced
+# Improrts
+. .\scripts\utility.ps1
+. .\scripts\display.ps1
+
+# Variables
+$global:graphWidth = 50
+$global:graphHeight = 10
+
+# Function Log Error
 function Log-Error {
     param($ErrorMessage)
     $logFilePath = ".\Error-Crash.Log"
@@ -19,7 +24,6 @@ function Log-Error {
         Write-Host "Error logging failed. Please check file permissions."
     }
 }
-
 
 # Variables
 $config = Load-Configuration

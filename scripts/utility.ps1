@@ -1,51 +1,63 @@
 # Script: utility.ps1
 
-# Function Load Configuration
-function Load-Configuration {
+# Function Manage Configuration
+function Manage-Configuration {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$action,
+        [Parameter()]
+        [hashtable]$config
+    )
     $filePath = 'scripts/configuration.psd1'
-    Write-Host "Attempting to load configuration from: $filePath"
-
-    if (Test-Path $filePath) {
-        Write-Host "Configuration file found."
-        try {
-            $config = Import-PowerShellDataFile -Path $filePath
-            Write-Host "Configuration loaded successfully."
-            # Combine all sections into one hashtable
-            return @{
-                DatingKeys = $config.DatingKeys
-                CurrentKeys = $config.CurrentKeys
-                IntermittantKeys = $config.IntermittantKeys
-                HistoryKeys = $config.HistoryKeys
+    switch ($action) {
+        "Load" {
+            Write-Host "Attempting to load configuration from: $filePath"
+            if (Test-Path $filePath) {
+                Write-Host "Configuration file found."
+                try {
+                    $config = Import-PowerShellDataFile -Path $filePath
+                    Write-Host "Configuration loaded successfully."
+                    return @{
+                        DatingKeys = $config.DatingKeys
+                        CurrentKeys = $config.CurrentKeys
+                        IntermittantKeys = $config.IntermittantKeys
+                        HistoryKeys = $config.HistoryKeys
+                    }
+                } catch {
+                    Write-Host "Failed to import configuration file. Error: $_"
+                    throw
+                }
+            } else {
+                Write-Host "Configuration file not found at path: $filePath"
+                throw "Configuration file not found"
             }
-        } catch {
-            Write-Host "Failed to import configuration file. Error: $_"
-            throw
         }
-    } else {
-        Write-Host "Configuration file not found at path: $filePath"
-        throw "Configuration file not found"
-    }
-}
-
-
-
-# Function Save Configuration
-function Save-Configuration ($config) {
-    $psd1Content = "@{"
-    foreach ($key in $config.Keys) {
-        $value = $config[$key]
-        if ($value -is [System.Array]) {
-            $arrayContent = $value -join ' '
-            $psd1Content += "`n    $key = @($arrayContent)"
-        } else {
-            $psd1Content += "`n    $key = '$value'"
+        "Save" {
+            if ($null -eq $config) {
+                Write-Host "No configuration data provided to save."
+                return
+            }
+            $psd1Content = "@{"
+            foreach ($key in $config.Keys) {
+                $value = $config[$key]
+                if ($value -is [System.Array]) {
+                    $arrayContent = $value -join ' '
+                    $psd1Content += "`n    $key = @($arrayContent)"
+                } else {
+                    $psd1Content += "`n    $key = '$value'"
+                }
+            }
+            $psd1Content += "`n}"
+            try {
+                $psd1Content | Out-File -FilePath $filePath
+                Write-Host "Configuration saved successfully."
+            } catch {
+                Write-Host "Failed to save configuration. Please check file permissions."
+            }
         }
-    }
-    $psd1Content += "`n}"
-    try {
-        $psd1Content | Out-File -FilePath 'scripts/configuration.psd1'
-    } catch {
-        Write-Host "Failed to save configuration. Please check file permissions."
+        default {
+            Write-Host "Invalid action specified. Please use 'Load' or 'Save'."
+        }
     }
 }
 
@@ -55,18 +67,28 @@ function Rotate-DailyRecords ([ref]$dayRecords, $newRecord) {
 }
 
 # Function Update Financialdata
-function Update-FinancialData ($amountChange) {
+function Update-FinancialData {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$amountChange,
+        [Parameter(Mandatory=$true)]
+        [string]$inputType
+    )
+
     if (-not [int]::TryParse($amountChange, [ref]$null)) {
         Write-Host "Invalid amount change. Please enter a valid number."
         return
     }
-    $config = Load-Configuration
-    Update-CurrentTotal $config.CurrentKeys $amountChange
-    Update-DailyRecords $config.HistoryKeys $amountChange
-    Update-HighLowRecords $config.IntermittantKeys $config.CurrentKeys
-    Save-Configuration $config
+    $config = Manage-Configuration -action "Load"
+    if ($inputType -eq "CreditChange") {
+        Update-CurrentTotal $config.CurrentKeys $amountChange
+        Update-FinancialRecords $config.HistoryKeys $amountChange
+        Update-HighLowRecords $config.IntermittantKeys $config.CurrentKeys
+    } elseif ($inputType -eq "MonthlyExpenses") {
+        Update-MonthlyExpenses $amountChange
+    }
+    Manage-Configuration -action "Save" -config $config
 }
-
 
 # Function Rotate Higherorderrecords
 function Rotate-HigherOrderRecords ($config) {
@@ -94,34 +116,25 @@ function Handle-HigherOrderRecordsRotation ($config) {
     return $config
 }
 
+# Function Get Predictedvalues
 function Get-PredictedValues($historyKeys) {
     $predictedValues = @()
     $totalRecentChanges = 0
     $numRecords = $historyKeys.DayRecords_1.Count
-
     if ($numRecords -eq 0) {
-        return $predictedValues  # Return empty array if no records
+        return $predictedValues  
     }
-
-    # Calculate the average of recent changes
     for ($i = 0; $i -lt $numRecords; $i++) {
         $totalRecentChanges += $historyKeys.DayRecords_1[$i]
     }
     $averageChange = $totalRecentChanges / $numRecords
-
-    # Predict future values using the average change
-    $currentValue = $historyKeys.DayRecords_1[-1]  # Starting from the most recent record
+    $currentValue = $historyKeys.DayRecords_1[-1]  
     for ($i = 0; $i -lt $numRecords; $i++) {
         $currentValue += $averageChange
         $predictedValues += $currentValue
     }
-
     return $predictedValues
 }
-
-
-
-
 
 # Function Abs
 function Abs($number) {
@@ -136,26 +149,27 @@ function Update-MonthlyExpenses ($newCharge) {
     Save-Configuration $config
 }
 
-# Function Update Current Total with Precision Handling
+# Function Update Currenttotal
 function Update-CurrentTotal ($currentKeys, $amountChange) {
     $roundedChange = [math]::Round($amountChange, 2)
     $currentKeys.CurrentTotal += $roundedChange
     $currentKeys.LastFinanceChange = $roundedChange
 }
 
-
-
+# Function Update Highlowrecords
 function Update-HighLowRecords ($intermittantKeys, $currentKeys) {
     $intermittantKeys.HighestCreditHigh = [math]::Max($intermittantKeys.HighestCreditHigh, $currentKeys.DayCreditHigh)
     $intermittantKeys.LowestCreditLow = [math]::Min($intermittantKeys.LowestCreditLow, $currentKeys.DayCreditLow)
 }
 
-
-
-
-# Function Update Dailyrecords
-function Update-DailyRecords ($historyKeys, $amountChange) {
-    Rotate-DailyRecords ([ref]$historyKeys.DayRecords_1) $amountChange
+# Function Update FinancialRecords
+function Update-FinancialRecords {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ref]$historyKeys,
+        [Parameter(Mandatory=$true)]
+        [int]$amountChange
+    )
+    Rotate-DailyRecords $historyKeys.DayRecords_1 $amountChange
     Handle-HigherOrderRecordsRotation $historyKeys
 }
-
