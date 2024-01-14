@@ -1,38 +1,30 @@
 # Script: display.ps1
 
 # Function Display Graphandsummary
-function Display-GraphAndSummary {
+function ShowDisplay-HandleInput {
+    # Display Graph and Summary
     Display-Graph
     Display-FinancialSummary
+	
     Write-Host "`nOptions: C, M, X: " -NoNewline
-}
-
-# Function Handle Userinput
-function Handle-UserInput {
     $input = Read-Host
     switch ($input.ToLower()) {
         "x" { PerformExitRoutine }
-        "c" { Prompt-CreditChange }
-        "m" { Prompt-MonthlyCharge }
+        "c" { Prompt-UserInput -inputType "CreditChange" }
+        "m" { Prompt-UserInput -inputType "MonthlyExpenses" }
         default { Write-Host "Invalid option." }
     }
-}
-
-# Function Performexitroutine
-function PerformExitRoutine {
-    Write-Host "Exiting..."
-    Exit
 }
 
 # Function Prompt UserInput
 function Prompt-UserInput {
     param($inputType)
-    $prompt = $inputType -eq "CreditChange" ? "Amount=" : "Expense="
+    $prompt = $inputType -eq "CreditChange" ? "Enter Amount Change: " : "Enter Monthly Expense: "
     $change = Read-Host $prompt
     if ($change -match '^-?\d+$') {
         Update-FinancialData -amountChange $change -inputType $inputType
     } else {
-        Write-Host "Invalid number."
+        Write-Host "Invalid number. Please enter a valid numeric value."
     }
 }
 

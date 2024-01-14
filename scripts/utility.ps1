@@ -41,12 +41,6 @@ function Get-PredictedValues($historyKeys) {
     return $predictedValues
 }
 
-# Function Handle Higherorderrecordsrotation
-function Handle-HigherOrderRecordsRotation ($config) {
-    $config = Rotate-HigherOrderRecords $config
-    return $config
-}
-
 # Function Update Financialdata
 function Update-FinancialData {
     param([string]$amountChange, [string]$inputType)

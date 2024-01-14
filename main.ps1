@@ -33,12 +33,17 @@ if ($global:config.DatingKeys.LastRotation1Day -eq '01/01/0000') {
     Manage-ConfigSettings -action "Save" -config $global:config
 }
 
+# Function Performexitroutine
+function PerformExitRoutine {
+    Write-Host "Exiting..."
+    Exit
+}
+
 # Main Execution Loop
 try {
     Start-Sleep -Seconds 1
     while ($true) {
-        Display-GraphAndSummary
-        Handle-UserInput
+        ShowDisplay-HandleInput
     }
 } catch {
     Log-Error $_.Exception.Message
