@@ -33,7 +33,7 @@ Function Show-HistoryGraph {
         return
     }
 
-    $CharactersPerStat = $global:graphWidth / 30
+    $CharactersPerStat = [Math]::Floor($global:graphWidth / 30)
     $MaxValue = ($DayRecords | Measure-Object -Maximum).Maximum
     $MinValue = ($DayRecords | Measure-Object -Minimum).Minimum
     $GraphHeightScale = ($MaxValue - $MinValue) / $global:graphHeight
@@ -45,16 +45,17 @@ Function Show-HistoryGraph {
                 $Color = if ($height -ge $global:graphHeight * 0.75) { "Green" }
                          elseif ($height -le $global:graphHeight * 0.25) { "Red" }
                          else { "Yellow" }
-                $GraphSymbol = '█'
+                $GraphSymbol = '█' * $CharactersPerStat
             } else {
                 $Color = "Gray" # Default color for empty space
-                $GraphSymbol = ' '
+                $GraphSymbol = ' ' * $CharactersPerStat
             }
             Write-Host $GraphSymbol -NoNewline -ForegroundColor $Color
         }
         Write-Host ""
     }
 }
+
 
 
 
@@ -74,6 +75,7 @@ Function Show-PredictionGraph {
     $MaxValue = ($DayRecords | Measure-Object -Maximum).Maximum
     $MinValue = ($DayRecords | Measure-Object -Minimum).Minimum
     $GraphHeightScale = ($MaxValue - $MinValue) / $global:graphHeight
+    $CharactersPerStat = [Math]::Floor($global:graphWidth / 30)
 
     for ($height = $global:graphHeight; $height -ge 0; $height--) {
         foreach ($record in $DayRecords) {
@@ -87,16 +89,17 @@ Function Show-PredictionGraph {
                 $Color = if ($height -ge $global:graphHeight * 0.75) { "Green" }
                          elseif ($height -le $global:graphHeight * 0.25) { "Red" }
                          else { "Yellow" }
-                $GraphSymbol = '█'
+                $GraphSymbol = '█' * $CharactersPerStat
             } else {
                 $Color = "Gray" # Default color for non-volatility sections
-                $GraphSymbol = ' '
+                $GraphSymbol = ' ' * $CharactersPerStat
             }
             Write-Host $GraphSymbol -NoNewline -ForegroundColor $Color
         }
         Write-Host ""
     }
 }
+
 
 
 

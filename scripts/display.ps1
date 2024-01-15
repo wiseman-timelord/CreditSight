@@ -5,15 +5,15 @@ function ShowDisplay-HandleInput {
     $global:config = Manage-ConfigSettings -action "Load"
     $HistoryDays = Get-TotalDays -DayRecords1 $global:config.HistoryKeys.DayRecords_1 -DayRecords10 $global:config.HistoryKeys.DayRecords_10 -DayRecords100 $global:config.HistoryKeys.DayRecords_100
     $HistoryDays = AdjustForZeroes -DayRecords $global:config.HistoryKeys.DayRecords_1 -TotalDays $HistoryDays
-    Write-Host ("=" * 60)
+    Write-Host ("=" * 90)
     Write-Host "History ($HistoryDays Days):"
     Display-Graph -GraphType "History" -DayRecords1 $global:config.HistoryKeys.DayRecords_1 -DayRecords10 $global:config.HistoryKeys.DayRecords_10 -DayRecords100 $global:config.HistoryKeys.DayRecords_100
-    Write-Host ("-" * 60)
+    Write-Host ("-" * 90)
     Write-Host "Prediction ($HistoryDays Days):"
     Display-Graph -GraphType "Prediction" -DayRecords1 $global:config.HistoryKeys.DayRecords_1 -DayRecords10 $global:config.HistoryKeys.DayRecords_10 -DayRecords100 $global:config.HistoryKeys.DayRecords_100
-    Write-Host ("=" * 60)
+    Write-Host ("=" * 90)
     Display-FinancialSummary
-    Write-Host "`nSelect, Credit Change = C, Set Monthly = M, Exit Program = X: " -NoNewline
+    Write-Host "`nSelect, Credit Change = C, Monthly Income = I, Monthly Expenses = M, Exit Program = X: " -NoNewline
     $input = Read-Host
     switch ($input.ToLower()) {
         "x" { PerformExitRoutine }
@@ -44,10 +44,10 @@ function IsValidNumber($number) {
 # Function Display Financialsummary
 function Display-FinancialSummary {
     $config = Manage-ConfigSettings -action "Load"
-    Write-Host "`n              Current Credit: $($config.CurrentKeys.CurrentTotal), Last Change: $($config.IntermittantKeys.LastFinanceChange),"
-	Write-Host "`n                      Monthly Expenses: $($config.IntermittantKeys.MonthlyExpenses),"
-	Write-Host "`n              Current High: $($config.CurrentKeys.DayCreditHigh), Highest High: $($config.IntermittantKeys.HighestCreditHigh),"
-	Write-Host "               Current Low: $($config.CurrentKeys.DayCreditLow), Lowest Low: $($config.IntermittantKeys.LowestCreditLow).`n"
+    Write-Host "`n                        Current Credit: $($config.CurrentKeys.CurrentTotal), Last Change: $($config.IntermittantKeys.LastFinanceChange),"
+	Write-Host "`n                       Monthly Income: , Monthly Expenses: $($config.IntermittantKeys.MonthlyExpenses),"
+	Write-Host "`n                        Current High: $($config.CurrentKeys.DayCreditHigh), Highest High: $($config.IntermittantKeys.HighestCreditHigh),"
+	Write-Host "                         Current Low: $($config.CurrentKeys.DayCreditLow), Lowest Low: $($config.IntermittantKeys.LowestCreditLow).`n"
 }
 
 # for display on top of graphs

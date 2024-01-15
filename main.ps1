@@ -13,7 +13,7 @@ Write-Host "`n`CreditSight Started....`n`n"
 . .\scripts\graph.ps1    
 
 # Variables
-$global:graphWidth = 60
+$global:graphWidth = 90
 $global:graphHeight = 15
 $global:filePath = 'scripts/settings.psd1'
 $global:config = Manage-ConfigSettings -action "Load" 
