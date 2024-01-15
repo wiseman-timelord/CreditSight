@@ -8,6 +8,7 @@ Work to do...
 - include, input and stat, for montly income.
 - re-think the whole prediction system, it should not just simply be a inversion, it should intelligently utilize all available stats, to best effect.
 - Include stat for predicted "Date of Debt", when it is predicted the monthly charges will drive the current balance into debt, as a separate calculation based is "Debt Date: 216 Days".
+- highest high and lowest low, should be taken from the available history, after other initialization processes have completed, so as to have values from within the previous 3 years.
 - Profiles ie, personal, trading, business, etc, with differing, history and credit. The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1). 
 - Improve layout of profile menu.
 - Progress scripts to completion, incorporate all remaining ideas thought up along the way.
