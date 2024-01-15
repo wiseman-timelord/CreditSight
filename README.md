@@ -2,7 +2,7 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Fix counting of days, currently interprets 1110 days of data as 2 days.
+- Fix counting of days, currently counts 1110 days of data as 2 days.
 - the currency sign should be, used in all currency related stats and defined in the global variable, thus later on menu the user can define their currency symbol.
 - include, input and stat, for montly income.
 - re-think the whole prediction system, it should not just simply be a inversion, it should intelligently utilize all available stats, to best effect.
