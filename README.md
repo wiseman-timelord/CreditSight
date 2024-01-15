@@ -83,7 +83,7 @@ Select, Credit Change = C, Monthly Income = I, Monthly Expenses = M, Exit Progra
 - Wait for release.
 
 ### NOTATION
-- Credit to "Prateek Singh" for "[Show-Graph](https://geekeefy.wordpress.com/2017/09/04/plot-graph-in-powershell-console/)".
+- Credit to "Prateek Singh" for "[Show-Graph](https://geekeefy.wordpress.com/2017/09/04/plot-graph-in-powershell-console/)", definately inspired the, colors and character "█", usage, dont know how much of the code remains, will do a check when the program finished. 
 - Issues with GPT code windows during production of "graph.ps1", the most difficult script to produce in the project.
 
 ### DEVELOPMENT
