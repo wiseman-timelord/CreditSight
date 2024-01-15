@@ -62,12 +62,12 @@ Prediction (30 Days):
 ██████████████████████████████
 ==============================
 
-              Current Credit: 0.00, Last Change: 0.00,
+              Current Credit: 6.00, Last Change: 1.00,
 
-                      Monthly Expenses: 0.00,
+                      Monthly Expenses: -1.00,
 
-              Current High: 0.00, Highest High: 0.00,
-               Current Low: 0.00, Lowest Low: 0.00.
+              Current High: 6.00, Highest High: 6.00,
+               Current Low: 4.00, Lowest Low: -3.00.
 
 
 Select, Credit Change = C, Set Monthly = M, Exit Program = X:
