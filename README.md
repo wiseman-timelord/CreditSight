@@ -68,12 +68,10 @@ ARRrrhhh, das nicht compute..
 Attempting to load configuration from: scripts/configuration.psd1
 Configuration file found.
 Configuration loaded successfully.
-Current Total: 0.00
-Last Finance Change:
-Day Credit Low: 0
-Day Credit High: 0
-Day Credit Now: 0
-Monthly Expenses: 0
+
+Current Credit: 0.00, Last Change: 0.00, Monthly Expenses: 0.00
+
+             Lowest Low: 0.00, Highest High: 0.00.
 
 Select, Credit Change = C, Set Monthly = M, Exit Program = X:
 ```
