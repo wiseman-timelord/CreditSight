@@ -2,7 +2,7 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Fix graph generation.
+- Fix graph generation. Wooo... "https://geekeefy.wordpress.com/2017/09/04/plot-graph-in-powershell-console/"
 - Improve layout of graphs.
 - try put borders on graphs.
 - The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1), ie, personal, trading, business, etc, with differing, history and credit. 
