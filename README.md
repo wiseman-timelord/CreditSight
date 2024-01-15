@@ -93,7 +93,7 @@ The 2 graphs, history and prediction, will be based around, a string and a band,
 - for the history graph, thickness of the band should only be a single character string, using purely the values of, "DayRecords_100" and "DayRecords_10" and "DayRecords_1", produing a 30 character string.
 - for the prediction graph it should be a band, where the string for the history is then, inverted and smoothed, while having variance in the band, based upon a middle point between the, current days high + all time high and the current days low + all time low.
 -for the prediction graph the band is supposed to illustrate volatility, so while it has 1 value for the predicted value based on the history, it is supposed to be a band of "██" representing volatility, the volatility is based on, (((HighestCreditHigh - DayCreditHigh) / 2) + DayCreditHigh) = amount of volitility above the predicted value and (((LowestCreditLow - DayCreditLow) / 2) + DayCreditLow) = amount of volatility below the predicted value, thus creating a range between the two values for each, that should be filled with "██".
--it should be bands, from right to left for the history and from left to right for the prediction.  
+- it should be bands, from right to left for the history and from left to right for the prediction.  
 
 ## DISCLAIMER
 This software is subject to the terms in License.Txt, covering usage, distribution, and modifications. For full details on your rights and obligations, refer to License.Txt.
