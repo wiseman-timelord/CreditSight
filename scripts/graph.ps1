@@ -28,7 +28,6 @@ Function Show-HistoryGraph {
         [int[]] $DayRecords
     )
 
-    # Check for null or empty $DayRecords
     if (-not $DayRecords -or $DayRecords.Count -eq 0) {
         Write-Host "No data available for History Graph."
         return
@@ -39,21 +38,24 @@ Function Show-HistoryGraph {
     $MinValue = ($DayRecords | Measure-Object -Minimum).Minimum
     $GraphHeightScale = ($MaxValue - $MinValue) / $global:graphHeight
 
-    for ($line = $global:graphHeight; $line -ge 0; $line--) {
+    for ($height = $global:graphHeight; $height -ge 0; $height--) {
         foreach ($record in $DayRecords) {
             $ScaledValue = [Math]::Floor(($record - $MinValue) / $GraphHeightScale)
-            $Color = if ($ScaledValue -ge $line) { 
-                        if ($line -ge $global:graphHeight * 0.75) { "Green" }
-                        elseif ($line -le $global:graphHeight * 0.25) { "Red" }
-                        else { "Yellow" }
-                     } else { "Yellow" }
-
-            $GraphSymbol = if ($ScaledValue -ge $line) { '█' * $CharactersPerStat } else { ' ' * $CharactersPerStat }
+            if ($ScaledValue -eq $height) {
+                $Color = if ($height -ge $global:graphHeight * 0.75) { "Green" }
+                         elseif ($height -le $global:graphHeight * 0.25) { "Red" }
+                         else { "Yellow" }
+                $GraphSymbol = '█'
+            } else {
+                $Color = "Gray" # Default color for empty space
+                $GraphSymbol = ' '
+            }
             Write-Host $GraphSymbol -NoNewline -ForegroundColor $Color
         }
         Write-Host ""
     }
 }
+
 
 
 
@@ -63,32 +65,42 @@ Function Show-PredictionGraph {
         [int[]] $DayRecords
     )
 
-    # Check for null or empty $DayRecords
     if (-not $DayRecords -or $DayRecords.Count -eq 0) {
         Write-Host "No data available for Prediction Graph."
         return
     }
 
-    $CharactersPerStat = $global:graphWidth / 30
+    $config = Manage-ConfigSettings -action "Load"
     $MaxValue = ($DayRecords | Measure-Object -Maximum).Maximum
     $MinValue = ($DayRecords | Measure-Object -Minimum).Minimum
     $GraphHeightScale = ($MaxValue - $MinValue) / $global:graphHeight
 
-    for ($line = $global:graphHeight; $line -ge 0; $line--) {
+    for ($height = $global:graphHeight; $height -ge 0; $height--) {
         foreach ($record in $DayRecords) {
+            $volatilityUpper = $record + (([double]$config.IntermittantKeys.HighestCreditHigh - $record) / 2)
+            $volatilityLower = $record - (($record - [double]$config.IntermittantKeys.LowestCreditLow) / 2)
             $ScaledValue = [Math]::Floor(($record - $MinValue) / $GraphHeightScale)
-            $Color = if ($ScaledValue -ge $line) { 
-                        if ($line -ge $global:graphHeight * 0.75) { "Green" }
-                        elseif ($line -le $global:graphHeight * 0.25) { "Red" }
-                        else { "Yellow" }
-                     } else { "Yellow" }
+            $ScaledVolatilityUpper = [Math]::Floor(($volatilityUpper - $MinValue) / $GraphHeightScale)
+            $ScaledVolatilityLower = [Math]::Floor(($volatilityLower - $MinValue) / $GraphHeightScale)
 
-            $GraphSymbol = if ($ScaledValue -ge $line) { '█' * $CharactersPerStat } else { ' ' * $CharactersPerStat }
+            if ($height -ge $ScaledVolatilityLower -and $height -le $ScaledVolatilityUpper) {
+                $Color = if ($height -ge $global:graphHeight * 0.75) { "Green" }
+                         elseif ($height -le $global:graphHeight * 0.25) { "Red" }
+                         else { "Yellow" }
+                $GraphSymbol = '█'
+            } else {
+                $Color = "Gray" # Default color for non-volatility sections
+                $GraphSymbol = ' '
+            }
             Write-Host $GraphSymbol -NoNewline -ForegroundColor $Color
         }
         Write-Host ""
     }
 }
+
+
+
+
 
 
 
