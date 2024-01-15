@@ -1,24 +1,18 @@
 # Script: display.ps1
 
-# Function Display Graphandsummary
+# Function Showdisplay Handleinput
 function ShowDisplay-HandleInput {
-
-    # Draw graphs (history days is same number as predicted)
     $global:config = Manage-ConfigSettings -action "Load"
-    $HistoryRecords = Get-ScaledDataPoints -DayRecords $global:config.HistoryKeys.DayRecords_1
-    $HistoryDays = $HistoryRecords.Count
+    $HistoryDays = Get-TotalDays -DayRecords1 $global:config.HistoryKeys.DayRecords_1 -DayRecords10 $global:config.HistoryKeys.DayRecords_10 -DayRecords100 $global:config.HistoryKeys.DayRecords_100
+    $HistoryDays = AdjustForZeroes -DayRecords $global:config.HistoryKeys.DayRecords_1 -TotalDays $HistoryDays
     Write-Host ("=" * 60)
     Write-Host "History ($HistoryDays Days):"
-    Display-Graph -GraphType "History"
+    Display-Graph -GraphType "History" -DayRecords1 $global:config.HistoryKeys.DayRecords_1 -DayRecords10 $global:config.HistoryKeys.DayRecords_10 -DayRecords100 $global:config.HistoryKeys.DayRecords_100
     Write-Host ("-" * 60)
     Write-Host "Prediction ($HistoryDays Days):"
-    Display-Graph -GraphType "Prediction"
+    Display-Graph -GraphType "Prediction" -DayRecords1 $global:config.HistoryKeys.DayRecords_1 -DayRecords10 $global:config.HistoryKeys.DayRecords_10 -DayRecords100 $global:config.HistoryKeys.DayRecords_100
     Write-Host ("=" * 60)
-
-    # Draw summary
-	Display-FinancialSummary
-
-    # User input and options
+    Display-FinancialSummary
     Write-Host "`nSelect, Credit Change = C, Set Monthly = M, Exit Program = X: " -NoNewline
     $input = Read-Host
     switch ($input.ToLower()) {
@@ -30,7 +24,7 @@ function ShowDisplay-HandleInput {
 }
 
 
-# Updated Function: Prompt-UserInput
+# Function Prompt Userinput
 function Prompt-UserInput {
     param($inputType)
     $prompt = $inputType -eq "CreditChange" ? "Enter Amount Change: " : "Enter Monthly Expense: "
@@ -42,7 +36,7 @@ function Prompt-UserInput {
     }
 }
 
-# Utility Function: IsValidNumber
+# Function Isvalidnumber
 function IsValidNumber($number) {
     return [int]::TryParse($number, [ref]$null)
 }
@@ -56,3 +50,29 @@ function Display-FinancialSummary {
 	Write-Host "               Current Low: $($config.CurrentKeys.DayCreditLow), Lowest Low: $($config.IntermittantKeys.LowestCreditLow).`n"
 }
 
+# for display on top of graphs
+function Get-TotalDays {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int[]] $DayRecords1,
+        [Parameter(Mandatory = $true)]
+        [int[]] $DayRecords10,
+        [Parameter(Mandatory = $true)]
+        [int[]] $DayRecords100
+    )
+    
+    $totalDays = 0
+    $totalDays += $DayRecords1.Count
+    $totalDays += $DayRecords10.Count * 10
+    $totalDays += $DayRecords100.Count * 100
+
+    return $totalDays
+}
+
+
+
+# Function Performexitroutine
+function PerformExitRoutine {
+    Write-Host "Exiting..."
+    Exit
+}

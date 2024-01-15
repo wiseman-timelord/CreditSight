@@ -17,7 +17,7 @@ echo Cleaning-Up Folder..
 echo Cleaning up..
 if exist ".\Errors-Crash.Log" (
     echo ...Deleting Log...
-    del ".\Errors-Crash.Log"
+    del /f /q ".\Error-Crash.Log"
 )
 echo ..Cleaning Done.
 echo ...Initialization Completed.

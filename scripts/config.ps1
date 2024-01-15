@@ -1,6 +1,6 @@
 # Script: config.ps1
 
-# function ConvertTo-Psd1Content 
+# Function Convertto Psd1content
 function ConvertTo-Psd1Content {
     param([hashtable]$Hashtable)
     $content = "@{"
@@ -10,7 +10,8 @@ function ConvertTo-Psd1Content {
             $nestedContent = ConvertTo-Psd1Content -Hashtable $value
             $content += "`n    $key = $nestedContent"
         } elseif ($value -is [System.Array]) {
-            $arrayContent = $value -join ', '
+            # Correctly format the array values
+            $arrayContent = $($value -join ', ')
             $content += "`n    $key = @($arrayContent)"
         } else {
             $content += "`n    $key = '$value'"
@@ -20,7 +21,8 @@ function ConvertTo-Psd1Content {
     return $content
 }
 
-# Updated Function: Manage-ConfigSettings
+
+# Function Manage Configsettings
 function Manage-ConfigSettings {
     param(
         [Parameter(Mandatory)]
@@ -29,12 +31,10 @@ function Manage-ConfigSettings {
         [hashtable]$config,
         [string]$filePath = 'scripts/settings.psd1'
     )
-    
     if ($action -eq "Save" -and $null -eq $config) {
         Write-Host "Empty Config Data"
         return
     }
-    
     switch ($action) {
         "Load" {
             if (Test-Path $filePath) {
@@ -43,12 +43,12 @@ function Manage-ConfigSettings {
                     return $config
                 } catch {
                     Write-Host "Load Error: $_"
-                    Log-Error "Load Error: $_" # Enhanced error handling with hypothetical Log-Error function
+                    Log-Error "Load Error: $_" 
                     return $null
                 }
             } else {
                 Write-Host "Config Missing: $filePath"
-                Log-Error "Config Missing: $filePath" # Enhanced error handling
+                Log-Error "Config Missing: $filePath" 
                 throw "Config Missing"
             }
         }
@@ -59,7 +59,7 @@ function Manage-ConfigSettings {
                 Write-Host "Config Saved"
             } catch {
                 Write-Host "Save Error: $_"
-                Log-Error "Save Error: $_" # Enhanced error handling
+                Log-Error "Save Error: $_" 
             }
         }
         default {
@@ -67,4 +67,3 @@ function Manage-ConfigSettings {
         }
     }
 }
-

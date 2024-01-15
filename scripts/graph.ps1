@@ -5,12 +5,13 @@ function Display-Graph {
     Param(
         [Parameter(Mandatory = $true)]
         [ValidateSet("History", "Prediction")]
-        [string] $GraphType
+        [string] $GraphType,
+        [int[]] $DayRecords1,
+        [int[]] $DayRecords10,
+        [int[]] $DayRecords100
     )
-
     $global:config = Manage-ConfigSettings -action "Load"
-    $DayRecords = Get-ScaledDataPoints -DayRecords $global:config.HistoryKeys.DayRecords_1
-
+    $DayRecords = Get-ScaledDataPoints -DayRecords1 $DayRecords1 -DayRecords10 $DayRecords10 -DayRecords100 $DayRecords100
     if ($GraphType -eq "History") {
         Show-HistoryGraph -DayRecords $DayRecords
     } elseif ($GraphType -eq "Prediction") {
@@ -19,12 +20,19 @@ function Display-Graph {
     }
 }
 
-# Function Update Financialrecord
+
+
 Function Show-HistoryGraph {
     Param(
         [Parameter(Mandatory = $true)]
         [int[]] $DayRecords
     )
+
+    # Check for null or empty $DayRecords
+    if (-not $DayRecords -or $DayRecords.Count -eq 0) {
+        Write-Host "No data available for History Graph."
+        return
+    }
 
     $CharactersPerStat = $global:graphWidth / 30
     $MaxValue = ($DayRecords | Measure-Object -Maximum).Maximum
@@ -55,6 +63,12 @@ Function Show-PredictionGraph {
         [int[]] $DayRecords
     )
 
+    # Check for null or empty $DayRecords
+    if (-not $DayRecords -or $DayRecords.Count -eq 0) {
+        Write-Host "No data available for Prediction Graph."
+        return
+    }
+
     $CharactersPerStat = $global:graphWidth / 30
     $MaxValue = ($DayRecords | Measure-Object -Maximum).Maximum
     $MinValue = ($DayRecords | Measure-Object -Minimum).Minimum
@@ -83,18 +97,14 @@ Function Get-PredictedValues {
         [Parameter(Mandatory = $true)]
         [int[]] $DayRecords
     )
-
-    # Calculate maximum and minimum values using Measure-Object
     $maxHistoryValue = ($DayRecords | Measure-Object -Maximum).Maximum
     $minHistoryValue = ($DayRecords | Measure-Object -Minimum).Minimum
     $average = [Math]::Round(($maxHistoryValue + $minHistoryValue) / 2)
-
     $PredictedValues = @()
     foreach ($record in $DayRecords) {
-        $invertedValue = $average - ($record - $average)  # Inverting around the average
+        $invertedValue = $average - ($record - $average)  
         $PredictedValues += $invertedValue
     }
-
     return $PredictedValues
 }
 
@@ -102,19 +112,19 @@ Function Get-PredictedValues {
 Function Get-ScaledDataPoints {
     Param(
         [Parameter(Mandatory = $true)]
-        [int[]] $DayRecords
+        [int[]] $DayRecords1,
+        [int[]] $DayRecords10,
+        [int[]] $DayRecords100
     )
-
     $ScaledRecords = @()
-    for ($i = 0; $i -lt 10; $i++) {
-        $ScaledRecords += $DayRecords[$i]
+    foreach ($record in $DayRecords1) {
+        $ScaledRecords += $record
     }
-    for ($i = 10; $i -lt 20; $i++) {
-        $ScaledRecords += [Math]::Round($DayRecords[$i] / 10)
+    foreach ($record in $DayRecords10) {
+        $ScaledRecords += [Math]::Round($record / 10)
     }
-    for ($i = 20; $i -lt 30; $i++) {
-        $ScaledRecords += [Math]::Round($DayRecords[$i] / 100)
+    foreach ($record in $DayRecords100) {
+        $ScaledRecords += [Math]::Round($record / 100)
     }
     return $ScaledRecords
 }
-
