@@ -62,9 +62,6 @@ ARRrrhhh, das nicht compute..
 *
 *
 *
-Attempting to load configuration from: scripts/configuration.psd1
-Configuration file found.
-Configuration loaded successfully.
 
 Current Credit: 0.00, Last Change: 0.00, Monthly Expenses: 0.00
 
