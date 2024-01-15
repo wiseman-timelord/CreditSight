@@ -2,13 +2,13 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Fix graph generation. Wooo... "https://geekeefy.wordpress.com/2017/09/04/plot-graph-in-powershell-console/"
-- Improve layout of graphs.
-- try put borders on graphs.
-- The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1), ie, personal, trading, business, etc, with differing, history and credit. 
-- Improve layout of new profile menu.
-- Progress scripts to completion over initial plans, think into these plans along the way.
-- have option for toggle, bi-directional or 2 graphs (history, prediction). 
+- Fix graph generation, should be string/band, not bar chart.
+- Fix counting of days, currently interprets 1110 days as 30 days.
+- Improve layout of graphs & stats.
+- Profiles ie, personal, trading, business, etc, with differing, history and credit. The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1). 
+- Improve layout of profile menu.
+- Progress scripts to completion, incorporate all remaining ideas thought up along the way.
+- have option for toggle, bi-directional or 2 graphs (history, prediction), thus bi-directional allowing, better depth for levels and worse length of time, of credit. 
 
 ## DESCRIPTION
 CreditSight is a PowerShell-based personal finance tracking application designed to provide users with a comprehensive view of their financial status. It focuses on visualizing financial data through graphs and maintaining detailed records of financial changes over time.
