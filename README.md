@@ -74,6 +74,7 @@ Select, Credit Change = C, Set Monthly = M, Exit Program = X:
 ```
 
 ### NOTATION
+- Credit to "Prateek Singh" for (Show-Graph)[https://geekeefy.wordpress.com/2017/09/04/plot-graph-in-powershell-console/].
 - Issues with GPT code windows during production of "graph.ps1", the most difficult script to produce in the project.
 
 ### DEVELOPMENT
