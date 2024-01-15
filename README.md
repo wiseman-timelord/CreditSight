@@ -2,9 +2,6 @@
 
 ### STATUS: ALPHA
 Work to do...
-- Check for Redundant functions & logic issues.
-- display of "Last Finance Change:" is empty.
-- Improve layout of, stats & prompted, options.
 - Fix graph generation.
 - Improve layout of graphs.
 - try put borders on graphs.
