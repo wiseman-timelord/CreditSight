@@ -89,15 +89,11 @@ Select, Credit Change = C, Set Monthly = M, Exit Program = X:
 ### DEVELOPMENT
 The 2 graphs, history and prediction, will be based around, a string and a band, where the band would be central to the graph in height when the balance is 0, and...
 - the entry point is "Display-Graph".
-- the height of each graph should be 15 lines.
-- if the band was in the middle 50% of the graph, this would be yellow blocks, representing low credit/debt.
-- if the band was in high credit, then they would in the top 25% of the graph in green.
-- if the band was in high debt, then they would be in the bottom 25% of the graph in red.
-- height in the graph represents credit level, this should be scaled to the, highest high and lowest low.
-- we will simplify things width on the graph should represent as are applicable, the 30 values for recorded history or the 30 predicted values based on the 30 recorded history; for each of the 10x10days we will divide the number by 10 for the graph and for each of the 10x100days we will divide the number by 100 for the graph, so as, to not need to scale the width, and use average days for those representations. thus the graph will always be 30 width. 
+- for each of the 10x10days we will divide the number by 10 for the graph and for each of the 10x100days we will divide the number by 100 for the graph, so as, to not need to scale the width, and use average days for those representations.
 - for the history graph, thickness of the band should only be a single character string, using purely the values of, "DayRecords_100" and "DayRecords_10" and "DayRecords_1", produing a 30 character string.
 - for the prediction graph it should be a band, where the string for the history is then, inverted and smoothed, while having variance in the band, based upon a middle point between the, current days high + all time high and the current days low + all time low.
-
+-for the prediction graph the band is supposed to illustrate volatility, so while it has 1 value for the predicted value based on the history, it is supposed to be a band of "██" representing volatility, the volatility is based on, (((HighestCreditHigh - DayCreditHigh) / 2) + DayCreditHigh) = amount of volitility above the predicted value and (((LowestCreditLow - DayCreditLow) / 2) + DayCreditLow) = amount of volatility below the predicted value, thus creating a range between the two values for each, that should be filled with "██".
+-it should be bands, from right to left for the history and from left to right for the prediction.  
 
 ## DISCLAIMER
 This software is subject to the terms in License.Txt, covering usage, distribution, and modifications. For full details on your rights and obligations, refer to License.Txt.
