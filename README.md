@@ -67,5 +67,8 @@ X
 Select, Credit Change = C, Set Monthly = M, Exit Program = X:
 ```
 
+### NOTATION
+- Issues with GPT code windows during production, hampered production of "graph.ps1", the most difficult script to produce.
+
 ## DISCLAIMER
 This software is subject to the terms in License.Txt, covering usage, distribution, and modifications. For full details on your rights and obligations, refer to License.Txt.
