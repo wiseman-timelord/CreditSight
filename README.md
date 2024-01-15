@@ -20,48 +20,41 @@ CreditSight is a PowerShell-based personal finance tracking application designed
 - **Daily Record Rotation**: Features a rotating record system where `DayRecords_10` updates every 10 days and `DayRecords_100` every 100 days, enabling three tiers of predictive capability and historical record-keeping, totalling, 1110 days or 3 years, of history/prediction.
 
 ### PREVIEW
-That is a cliff, not a graph..
+This is the best I could do without involving modules...we will now be involving modules..
 ```
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
+CreditSight Started....
+
+
+          X
+         X
+        X
+       X
+      X
+    X
+   X
+  X
+ X
+X
+    X
+    X
+    X
+    X
+    X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
+   X
 
               Current Credit: 0.00, Last Change: 0.00,
 
