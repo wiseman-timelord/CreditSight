@@ -71,15 +71,14 @@ Select, Credit Change = C, Set Monthly = M, Exit Program = X:
 - Issues with GPT code windows during production of "graph.ps1", the most difficult script to produce in the project.
 
 ### DEVELOPMENT
-REFRESH:
 The 2 graphs, history and prediction, will be based around, a string and a band, where the band would be central to the graph in height when the balance is 0, and...
--the entry point is "Display-Graph".
--the height of each graph should be 15 lines.
--if the band was in the middle 50% of the graph, this would be yellow blocks, representing low credit/debt.
--if the band was in high credit, then they would in the top 25% of the graph in green.
--if the band was in high debt, then they would be in the bottom 25% of the graph in red.
+- the entry point is "Display-Graph".
+- the height of each graph should be 15 lines.
+- if the band was in the middle 50% of the graph, this would be yellow blocks, representing low credit/debt.
+- if the band was in high credit, then they would in the top 25% of the graph in green.
+- if the band was in high debt, then they would be in the bottom 25% of the graph in red.
 - height in the graph represents credit level, this should be scaled to the, highest high and lowest low.
--we will simplify things width on the graph should represent as are applicable, the 30 values for recorded history or the 30 predicted values based on the 30 recorded history; for each of the 10x10days we will divide the number by 10 for the graph and for each of the 10x100days we will divide the number by 100 for the graph, so as, to not need to scale the width, and use average days for those representations. thus the graph will always be 30 width. 
+- we will simplify things width on the graph should represent as are applicable, the 30 values for recorded history or the 30 predicted values based on the 30 recorded history; for each of the 10x10days we will divide the number by 10 for the graph and for each of the 10x100days we will divide the number by 100 for the graph, so as, to not need to scale the width, and use average days for those representations. thus the graph will always be 30 width. 
 - for the history graph, thickness of the band should only be a single character string, using purely the values of, "DayRecords_100" and "DayRecords_10" and "DayRecords_1", produing a 30 character string.
 - for the prediction graph it should be a band, where the string for the history is then, inverted and smoothed, while having variance in the band, based upon a middle point between the, current days high + all time high and the current days low + all time low.
 
