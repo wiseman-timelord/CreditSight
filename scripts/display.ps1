@@ -105,10 +105,7 @@ function Display-Graph {
 # Function Display Financialsummary
 function Display-FinancialSummary {
     $config = Manage-ConfigSettings -action "Load"
-    Write-Host "Total: $($config.CurrentKeys.CurrentTotal)"
-    Write-Host "Last Change: $($config.CurrentKeys.LastFinanceChange)"
-    Write-Host "Low: $($config.CurrentKeys.DayCreditLow)"
-    Write-Host "High: $($config.CurrentKeys.DayCreditHigh)"
-    Write-Host "Now: $($config.CurrentKeys.DayCreditNow)"
-    Write-Host "Expenses: $($config.IntermittantKeys.MonthlyExpenses)"
+    Write-Host "`nCurrent Credit: $($config.CurrentKeys.CurrentTotal), Last Change: $($config.IntermittantKeys.LastFinanceChange), Monthly Expenses: $($config.IntermittantKeys.MonthlyExpenses)"
+    Write-Host "`n             Lowest Low: $($config.CurrentKeys.DayCreditLow), Highest High: $($config.CurrentKeys.DayCreditHigh)."
 }
+

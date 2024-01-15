@@ -10,15 +10,15 @@
     LastRotation100Days = '01/14/2024'
 }
     IntermittantKeys = @{
-    LowestCreditLow = '0'
-    HighestCreditHigh = '0'
-    MonthlyExpenses = '0'
+    LowestCreditLow = '0.00'
+    HighestCreditHigh = '0.00'
+    MonthlyExpenses = '0.00'
     LastFinanceChange = '0.00'
 }
     CurrentKeys = @{
-    DayCreditHigh = '0'
+    DayCreditHigh = '0.00'
     CurrentTotal = '0.00'
-    DayCreditLow = '0'
-    DayCreditNow = '0'
+    DayCreditLow = '0.00'
+    DayCreditNow = '0.00'
 }
 }
