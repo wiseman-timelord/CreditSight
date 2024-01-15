@@ -2,10 +2,23 @@
 
 # Function Display Graphandsummary
 function ShowDisplay-HandleInput {
-    # Display Graph and Summary
-    Display-Graph
-    Display-FinancialSummary
-	
+
+    # Draw graphs (history days is same number as predicted)
+    $global:config = Manage-ConfigSettings -action "Load"
+    $HistoryRecords = Get-ScaledDataPoints -DayRecords $global:config.HistoryKeys.DayRecords_1
+    $HistoryDays = $HistoryRecords.Count
+    Write-Host ("=" * 60)
+    Write-Host "History ($HistoryDays Days):"
+    Display-Graph -GraphType "History"
+    Write-Host ("-" * 60)
+    Write-Host "Prediction ($HistoryDays Days):"
+    Display-Graph -GraphType "Prediction"
+    Write-Host ("=" * 60)
+
+    # Draw summary
+	Display-FinancialSummary
+
+    # User input and options
     Write-Host "`nSelect, Credit Change = C, Set Monthly = M, Exit Program = X: " -NoNewline
     $input = Read-Host
     switch ($input.ToLower()) {
@@ -15,6 +28,7 @@ function ShowDisplay-HandleInput {
         default { Write-Host "Invalid option." }
     }
 }
+
 
 # Updated Function: Prompt-UserInput
 function Prompt-UserInput {
@@ -31,75 +45,6 @@ function Prompt-UserInput {
 # Utility Function: IsValidNumber
 function IsValidNumber($number) {
     return [int]::TryParse($number, [ref]$null)
-}
-
-
-
-# Function Update Financialrecord
-function Update-FinancialRecord {
-    $amountChange = Read-Host "Amount Change:"
-    if ($amountChange -match '^-?\d+$') {
-        Update-FinancialData $amountChange
-        Write-Host "Record updated."
-    } else {
-        Write-Host "Invalid amount."
-    }
-}
-
-# Create Graph
-function Create-Graph {
-    param([string]$graphType, [int]$graphWidth, [int]$graphHeight)
-    switch ($graphType) {
-        "Prediction" {
-            # Logic from Create-PredictionGraph
-            $predictionGraph = @()
-            $predictedValues = Get-PredictedValues $global:config.HistoryKeys
-            foreach ($predictedValue in $predictedValues) {
-                $historicalVolatility = $global:config.IntermittantKeys.HighestCreditHigh - $global:config.IntermittantKeys.LowestCreditLow
-                $dailyVolatility = $global:config.CurrentKeys.DayCreditHigh - $global:config.CurrentKeys.DayCreditLow
-                $volatility = [math]::Max($historicalVolatility, $dailyVolatility)
-                $startY = [math]::Max(0, $predictedValue - $volatility / 2)
-                $endY = [math]::Min($graphHeight - 1, $predictedValue + $volatility / 2)
-                $line = (' ' * $graphWidth).ToCharArray()
-                for ($y = $startY; $y -le $endY; $y++) {
-                    if ($y -ge 0 -and $y -lt $line.Length) {
-                        $line[$y] = "*"
-                    }
-                }
-                $predictionGraph += -join $line
-            }
-            return $predictionGraph -join "`n"
-        }
-        "History" {
-            # Logic from Create-HistoryGraph
-            $historyGraph = @()
-            $maxValue = ($global:config.HistoryKeys.DayRecords_1 + $global:config.HistoryKeys.DayRecords_10 + $global:config.HistoryKeys.DayRecords_100) | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
-
-            if ($maxValue -eq 0) {
-                $maxValue = 1
-            }
-            $scalingFactor = $graphHeight / $maxValue
-
-            foreach ($value in $global:config.HistoryKeys.DayRecords_1 + $global:config.HistoryKeys.DayRecords_10 + $global:config.HistoryKeys.DayRecords_100) {
-                $y = [math]::Round($value * $scalingFactor)
-                $line = (' ' * $graphWidth).ToCharArray()
-                if ($y -ge 0 -and $y -lt $line.Length) {
-                    $line[$y] = "*"
-                }
-                $historyGraph += -join $line
-            }
-            [array]::Reverse($historyGraph)
-            return $historyGraph -join "`n"
-        }
-        default {
-            Write-Host "Invalid type: $graphType"
-        }
-    }
-}
-
-# Function Display Graph
-function Display-Graph {
-    Write-Host (Create-Graph "History" $global:graphWidth $global:graphHeight)
 }
 
 # Function Display Financialsummary

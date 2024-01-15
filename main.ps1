@@ -1,14 +1,20 @@
 # Script: main.ps1
 
 # Initialization and Imports
+[Console]::ForegroundColor = [ConsoleColor]::Black
+[Console]::BackgroundColor = [ConsoleColor]::DarkGray
+[Console]::Clear() 
 Write-Host "`n`CreditSight Started....`n`n"
+
+# Imports
 . .\scripts\utility.ps1   # Utility Functions
 . .\scripts\display.ps1   # Display Functions
 . .\scripts\config.ps1    # Configuration Management
+. .\scripts\graph.ps1    # create graphs
 
 # Global Variables
-$global:graphWidth = 50
-$global:graphHeight = 10
+$global:graphWidth = 60
+$global:graphHeight = 15
 $global:filePath = 'scripts/settings.psd1'
 $global:config = Manage-ConfigSettings -action "Load" # Centralized Config Loading
 
