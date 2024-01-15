@@ -4,7 +4,8 @@
 Work to do...
 - Fix graph generation, should be string/band, not bar chart.
 - Fix counting of days, currently interprets 1110 days as 30 days.
-- Improve layout of graphs & stats.
+- Improve layout of graphs & stats, all credit/debt fields should have a currency sign, the currency sign should be defined in the global variable, thus later on menu the user can define their currency symbol.
+- Include stat for predicted "Date of Debt", when it is predicted the monthly charges will drive the current balance into debt, as a separate calculation based is "Debt Date: 216 Days".
 - Profiles ie, personal, trading, business, etc, with differing, history and credit. The line "$global:filePath = 'scripts/settings.psd1'" allows one to specify the config file, hence, we could have a menu as first screen, to, create new or select existing, settings file, so as to have profiles (.\profiles\ExampleProfileName.Psd1). 
 - Improve layout of profile menu.
 - Progress scripts to completion, incorporate all remaining ideas thought up along the way.
