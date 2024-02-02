@@ -1,4 +1,4 @@
-# CreditSight-Ps
+# CreditSight
 
 ### STATUS: ALPHA
 Work to do...
